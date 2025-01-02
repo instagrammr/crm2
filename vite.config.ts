@@ -7,6 +7,7 @@ import { defineConfig } from 'vite'
 
 // https://vitejs.dev/config/
 export default defineConfig({
+  base: '/',  // Added base URL configuration
   plugins: [
     vue(),
     legacy()
