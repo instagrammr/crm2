@@ -1,0 +1,7 @@
+{
+  "name": "crmp",
+  "integrations": {
+    "capacitor": {}
+  },
+  "type": "vue-vite"
+}
