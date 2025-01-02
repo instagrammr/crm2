@@ -2,9 +2,9 @@
     "rewrites": [
       {
         "source": "/(.*)",
-        "destination": "/index.html"
+        "destination": "/"
       }
-    ],
-    "cleanUrls": true,
-    "trailingSlash": false
+    ]
   }
+    
+  
