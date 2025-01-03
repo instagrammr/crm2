@@ -9,24 +9,95 @@
               <ion-buttons slot="start">
                 <ion-menu-button></ion-menu-button>
               </ion-buttons>
-              <ion-title>Attendance Tracker</ion-title>
+              <ion-title>Attendance Dashboard</ion-title>
             </ion-toolbar>
           </ion-header>
           
           <ion-content class="ion-padding">
             <div class="attendance-container">
+              <!-- Stats Cards Row -->
+              <ion-grid>
+                <ion-row>
+                  <!-- Present Today -->
+                  <ion-col size-xs="12" size-sm="3">
+                    <ion-card class="stats-card animate-gradient-1">
+                      <ion-card-header>
+                        <ion-card-title class="stats-title">Today's Present</ion-card-title>
+                      </ion-card-header>
+                      <ion-card-content>
+                        <div class="stats-content">
+                          <div class="stats-number">{{ todayPresentCount }}</div>
+                          <div class="stats-label">Present Today</div>
+                        </div>
+                      </ion-card-content>
+                    </ion-card>
+                  </ion-col>
+
+                  <!-- Absent Today -->
+                  <ion-col size-xs="12" size-sm="3">
+                    <ion-card class="stats-card animate-gradient-2">
+                      <ion-card-header>
+                        <ion-card-title class="stats-title">Today's Absent</ion-card-title>
+                      </ion-card-header>
+                      <ion-card-content>
+                        <div class="stats-content">
+                          <div class="stats-number">{{ todayAbsentCount }}</div>
+                          <div class="stats-label">Absent Today</div>
+                        </div>
+                      </ion-card-content>
+                    </ion-card>
+                  </ion-col>
+
+                  <!-- Monthly Stats -->
+                  <ion-col size-xs="12" size-sm="3">
+                    <ion-card class="stats-card animate-gradient-3">
+                      <ion-card-header>
+                        <ion-card-title class="stats-title">Monthly Stats</ion-card-title>
+                      </ion-card-header>
+                      <ion-card-content>
+                        <div class="stats-content">
+                          <div class="stats-number">{{ monthlyPresentCount }}/{{ monthlyAbsentCount }}</div>
+                          <div class="stats-label">Present/Absent This Month</div>
+                        </div>
+                      </ion-card-content>
+                    </ion-card>
+                  </ion-col>
+
+                  <!-- Filtered Stats -->
+                  <ion-col size-xs="12" size-sm="3">
+                    <ion-card class="stats-card animate-gradient-4">
+                      <ion-card-header>
+                        <ion-card-title class="stats-title">Filtered Stats</ion-card-title>
+                      </ion-card-header>
+                      <ion-card-content>
+                        <div class="stats-content">
+                          <div class="stats-number">{{ filteredPresentCount }}/{{ filteredAbsentCount }}</div>
+                          <div class="stats-label">Present/Absent {{ appliedDate ? '(Filtered)' : '(Total)' }}</div>
+                        </div>
+                      </ion-card-content>
+                    </ion-card>
+                  </ion-col>
+                </ion-row>
+              </ion-grid>
+
+              <!-- Filter Card -->
               <ion-card class="filter-card">
                 <ion-card-content>
                   <ion-grid>
                     <ion-row class="filter-row">
                       <ion-col size-xs="12" size-sm="8">
-                        <ion-label class="date-label">Select Date</ion-label>
-                        <ion-datetime 
-                          presentation="date" 
-                          v-model="specificDate"
-                          @ionChange="applyDateFilter"
-                          class="custom-datetime"
-                        ></ion-datetime>
+                        <ion-button 
+                          expand="block" 
+                          fill="outline" 
+                          class="date-select-button"
+                          @click="openDateModal"
+                        >
+                          <ion-icon 
+                            :icon="calendarOutline" 
+                            slot="start"
+                          ></ion-icon>
+                          {{ selectedDateDisplay || 'Select Date' }}
+                        </ion-button>
                       </ion-col>
                       <ion-col size-xs="12" size-sm="4" class="ion-text-center ion-align-self-end">
                         <ion-button 
@@ -43,37 +114,71 @@
                 </ion-card-content>
               </ion-card>
 
-              <ion-card class="attendance-list-card">
+              <!-- Date Picker Modal -->
+              <ion-modal 
+                :is-open="isDateModalOpen"
+                @didDismiss="closeDateModal"
+                class="date-modal"
+              >
+                <ion-header>
+                  <ion-toolbar>
+                    <ion-title>Select Date</ion-title>
+                    <ion-buttons slot="end">
+                      <ion-button @click="closeDateModal">Close</ion-button>
+                    </ion-buttons>
+                  </ion-toolbar>
+                </ion-header>
+                <ion-content class="ion-padding">
+                  <ion-datetime
+                    presentation="date"
+                    v-model="specificDate"
+                    :show-default-buttons="true"
+                    @ionChange="handleDateSelect"
+                  ></ion-datetime>
+                </ion-content>
+              </ion-modal>
+
+              <!-- Attendance List Card -->
+              <ion-card class="attendance-table-card">
                 <ion-card-header>
                   <ion-card-title class="attendance-title">
-                    Attendance List 
+                    Attendance List
                     <small v-if="appliedDate" class="date-filter-text">
-                      ({{ formatDate(appliedDate) }})
+                      ({{ formatDisplayDate(appliedDate) }})
                     </small>
                   </ion-card-title>
                 </ion-card-header>
+
                 <ion-card-content>
-                  <ion-list v-if="attendanceList.length" class="attendance-list" lines="full">
-                    <ion-item v-for="attendance in attendanceList" :key="attendance.id" class="attendance-item">
-                      <ion-avatar slot="start" class="user-avatar">
-                        <img :src="attendance.user.avatar || '/assets/default-avatar.png'" :alt="attendance.user.username + ' avatar'">
-                      </ion-avatar>
-                      <ion-label>
-                        <h2 class="username">{{ attendance.user.username }}</h2>
-                        <p class="status-text">
-                          <ion-badge 
-                            :color="getStatusColor(attendance.attendance_status.status_name)"
-                            class="status-badge"
-                          >
-                            {{ attendance.attendance_status.status_name }}
-                          </ion-badge>
-                        </p>
-                      </ion-label>
-                      <ion-label slot="end">
-                        <p class="date-text">{{ formatDate(attendance.date) }}</p>
-                      </ion-label>
-                    </ion-item>
-                  </ion-list>
+                  <div class="table-container" v-if="attendanceList.length">
+                    <table class="attendance-table">
+                      <thead>
+                        <tr>
+                          <th>Username</th>
+                          <th>Status</th>
+                          <th>Login Time</th>
+                          <th>Logout Time</th>
+                          <th>Duration</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        <tr v-for="attendance in attendanceList" :key="attendance.id">
+                          <td class="username-cell">{{ attendance.user.username }}</td>
+                          <td>
+                            <ion-badge
+                              :color="getStatusColor(attendance.attendance_status.status_name)"
+                              class="status-badge"
+                            >
+                              {{ attendance.attendance_status.status_name }}
+                            </ion-badge>
+                          </td>
+                          <td>{{ formatDateTime(attendance.login_time) }}</td>
+                          <td>{{ formatDateTime(attendance.logout_time) }}</td>
+                          <td>{{ calculateDuration(attendance.login_time, attendance.logout_time) }}</td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </div>
                   <p v-else class="no-records-text">
                     No attendance records found.
                   </p>
@@ -87,8 +192,7 @@
   </ion-page>
 </template>
 
-<script>
-import { 
+<script>import { 
   IonApp, 
   IonContent, 
   IonHeader, 
@@ -110,9 +214,11 @@ import {
   IonDatetime, 
   IonCardTitle, 
   IonCardHeader,
-  IonAvatar,
-  IonBadge
+  IonBadge,
+  IonModal,
+  IonIcon
 } from '@ionic/vue';
+import { calendarOutline } from 'ionicons/icons';
 import { mapActions, mapState } from 'vuex';
 import { defineComponent } from 'vue';
 import SideMenu from '../../components/SideMenu.vue';
@@ -141,18 +247,23 @@ export default defineComponent({
     IonDatetime, 
     IonCardTitle, 
     IonCardHeader,
-    IonAvatar,
     IonBadge,
+    IonModal,
+    IonIcon,
     SideMenu
   },
   data() {
     return {
       specificDate: null,
-      appliedDate: null
+      appliedDate: null,
+      isDateModalOpen: false,
+      selectedDateDisplay: '',
+      calendarOutline
     }
   },
   computed: {
     ...mapState('attendance', ['totalAttendaceList']),
+    
     attendanceList() {
       if (!this.totalAttendaceList) return [];
       
@@ -163,10 +274,85 @@ export default defineComponent({
         const filterDate = new Date(this.appliedDate);
         return attendanceDate.toISOString().split('T')[0] === filterDate.toISOString().split('T')[0];
       });
+    },
+    
+    todayPresentCount() {
+      if (!this.totalAttendaceList) return 0;
+
+      const today = new Date().toISOString().split('T')[0];
+      return this.totalAttendaceList.filter(attendance => {
+        const attendanceDate = new Date(attendance.login_time || attendance.createdAt).toISOString().split('T')[0];
+        return attendanceDate === today && 
+               attendance.attendance_status.status_name.toLowerCase() === 'present';
+      }).length;
+    },
+
+    todayAbsentCount() {
+      if (!this.totalAttendaceList) return 0;
+
+      const today = new Date().toISOString().split('T')[0];
+      return this.totalAttendaceList.filter(attendance => {
+        const attendanceDate = new Date(attendance.login_time || attendance.createdAt).toISOString().split('T')[0];
+        return attendanceDate === today && 
+               attendance.attendance_status.status_name.toLowerCase() === 'absent';
+      }).length;
+    },
+
+    monthlyPresentCount() {
+      if (!this.totalAttendaceList) return 0;
+
+      const now = new Date();
+      const firstDayOfMonth = new Date(now.getFullYear(), now.getMonth(), 1);
+      return this.totalAttendaceList.filter(attendance => {
+        const attendanceDate = new Date(attendance.login_time || attendance.createdAt);
+        return attendanceDate >= firstDayOfMonth && 
+               attendance.attendance_status.status_name.toLowerCase() === 'present';
+      }).length;
+    },
+
+    monthlyAbsentCount() {
+      if (!this.totalAttendaceList) return 0;
+
+      const now = new Date();
+      const firstDayOfMonth = new Date(now.getFullYear(), now.getMonth(), 1);
+      return this.totalAttendaceList.filter(attendance => {
+        const attendanceDate = new Date(attendance.login_time || attendance.createdAt);
+        return attendanceDate >= firstDayOfMonth && 
+               attendance.attendance_status.status_name.toLowerCase() === 'absent';
+      }).length;
+    },
+
+    filteredPresentCount() {
+      if (!this.attendanceList) return 0;
+      return this.attendanceList.filter(attendance => 
+        attendance.attendance_status.status_name.toLowerCase() === 'present'
+      ).length;
+    },
+
+    filteredAbsentCount() {
+      if (!this.attendanceList) return 0;
+      return this.attendanceList.filter(attendance => 
+        attendance.attendance_status.status_name.toLowerCase() === 'absent'
+      ).length;
     }
   },
   methods: {
     ...mapActions('attendance', ['fetchtotalattendancelist']),
+    
+    openDateModal() {
+      this.isDateModalOpen = true;
+    },
+
+    closeDateModal() {
+      this.isDateModalOpen = false;
+    },
+
+    handleDateSelect(event) {
+      this.specificDate = event.detail.value;
+      this.appliedDate = this.specificDate;
+      this.selectedDateDisplay = this.formatDisplayDate(this.specificDate);
+      this.closeDateModal();
+    },
     
     async fetchLeadData() {
       try {
@@ -176,22 +362,51 @@ export default defineComponent({
       }
     },
     
-    formatDate(dateString) {
+    formatDisplayDate(dateString) {
       if (!dateString) return '';
-      return new Date(dateString).toLocaleDateString();
+      const options = { 
+        year: 'numeric', 
+        month: 'long', 
+        day: 'numeric' 
+      };
+      return new Date(dateString).toLocaleDateString('en-US', options);
     },
     
-    applyDateFilter() {
-      this.appliedDate = this.specificDate;
-      console.log('Date filter applied:', this.appliedDate);
+    formatDateTime(dateTimeString) {
+      if (!dateTimeString) return '-';
+      const date = new Date(dateTimeString);
+      
+      const formatNumber = (num) => num.toString().padStart(2, '0');
+      
+      const day = formatNumber(date.getDate());
+      const month = formatNumber(date.getMonth() + 1);
+      const year = date.getFullYear();
+      const hours = formatNumber(date.getHours());
+      const minutes = formatNumber(date.getMinutes());
+      const seconds = formatNumber(date.getSeconds());
+      
+      return `${day}/${month}/${year} ${hours}:${minutes}:${seconds}`;
+    },
+
+    calculateDuration(loginTime, logoutTime) {
+      if (!loginTime || !logoutTime) return '-';
+      
+      const start = new Date(loginTime);
+      const end = new Date(logoutTime);
+      const diff = end - start;
+      
+      const hours = Math.floor(diff / 3600000);
+      const minutes = Math.floor((diff % 3600000) / 60000);
+      
+      return `${hours}h ${minutes}m`;
     },
 
     resetFilter() {
       this.specificDate = null;
       this.appliedDate = null;
+      this.selectedDateDisplay = '';
     },
 
-    // New method to get badge color based on status
     getStatusColor(status) {
       switch(status.toLowerCase()) {
         case 'present': return 'success';
@@ -210,115 +425,96 @@ export default defineComponent({
   }
 });
 </script>
-  
+
 <style scoped>
 .attendance-container {
-  max-width: 800px;
+  max-width: 1200px;
   margin: 0 auto;
-  padding: 20px;
+}
+
+.stats-card {
+  height: 100%;
+  background: linear-gradient(135deg, var(--ion-color-primary) 0%, var(--ion-color-secondary) 100%);
+}
+
+.animate-gradient-1 {
+  background: linear-gradient(135deg, #4CAF50 0%, #2196F3 100%);
+}
+
+.animate-gradient-2 {
+  background: linear-gradient(135deg, #FF9800 0%, #F44336 100%);
+}
+
+.animate-gradient-3 {
+  background: linear-gradient(135deg, #9C27B0 0%, #673AB7 100%);
+}
+
+.stats-content {
+  text-align: center;
+  color: white;
+}
+
+.stats-number {
+  font-size: 2.5em;
+  font-weight: bold;
+  margin-bottom: 0.5rem;
+}
+
+.stats-label {
+  font-size: 1.1em;
+  opacity: 0.9;
+}
+
+.stats-title {
+  color: white;
+  font-size: 1.2em;
 }
 
 .filter-card {
-  background-color: #f9f9f9;
-  border-radius: 12px;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-  margin-bottom: 20px;
+  margin: 1rem 0;
 }
 
-.filter-row {
-  display: flex;
-  align-items: center;
-  gap: 15px;
-}
-
-.date-label {
-  color: #333;
-  font-weight: 600;
-  margin-bottom: 10px;
-}
-
-.custom-datetime {
+.date-select-button {
   width: 100%;
-  --background: white;
-  --border-radius: 8px;
-  --border-color: #ddd;
-  --border-style: solid;
-  --border-width: 1px;
-  padding: 10px;
 }
 
-.reset-button {
-  height: 48px;
-  font-weight: 600;
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
+.attendance-table {
+  width: 100%;
+  border-collapse: collapse;
 }
 
-.attendance-list-card {
-  border-radius: 12px;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.08);
-}
-
-.attendance-list {
-  background-color: transparent;
-}
-
-.attendance-item {
-  --padding-start: 15px;
-  --inner-padding-end: 15px;
-  margin-bottom: 10px;
-  border-radius: 10px;
-  background-color: #f9f9f9;
-}
-
-.user-avatar {
-  width: 50px;
-  height: 50px;
-  margin-right: 15px;
-}
-
-.username {
-  font-weight: 600;
-  color: #333;
-  margin-bottom: 5px;
-}
-
-.status-text {
-  display: flex;
-  align-items: center;
+.attendance-table th,
+.attendance-table td {
+  padding: 0.75rem;
+  text-align: left;
+  border-bottom: 1px solid var(--ion-color-light);
 }
 
 .status-badge {
-  font-size: 12px;
-  font-weight: 600;
-  text-transform: uppercase;
-  padding: 3px 8px;
-  border-radius: 4px;
-}
-
-.date-text {
-  color: #666;
-  font-size: 14px;
-  text-align: right;
-}
-
-.date-filter-text {
-  color: #666;
-  font-size: 14px;
-  margin-left: 10px;
+  padding: 0.5rem 1rem;
+  border-radius: 1rem;
 }
 
 .no-records-text {
   text-align: center;
-  color: #999;
-  font-style: italic;
-  padding: 20px;
+  color: var(--ion-color-medium);
+  padding: 2rem;
 }
 
-.attendance-title {
-  display: flex;
-  align-items: center;
-  color: #333;
-  font-weight: 700;
+.date-filter-text {
+  font-size: 0.8em;
+  color: var(--ion-color-medium);
+  margin-left: 0.5rem;
+}
+
+@media (max-width: 768px) {
+  .attendance-table {
+    display: block;
+    overflow-x: auto;
+  }
+  
+  .stats-card {
+    margin-bottom: 1rem;
+  }
 }
 </style>
