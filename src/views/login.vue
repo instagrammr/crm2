@@ -2,71 +2,84 @@
   <ion-page>
     <ion-content class="ion-padding login-background">
       <div class="login-container">
-        <div class="logo-container">
-          <svg width="80" height="80" viewBox="0 0 50 50" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <rect width="50" height="50" fill="#4A90E2"/>
-            <path d="M10 10H40V25H25V40H10V10Z" fill="white"/>
-            <text x="32" y="22" font-family="Arial" font-size="20" fill="white">R</text>
-          </svg>
-          <h1>Relavio</h1>
-        </div>
+        
 
-        <!-- Error Alert -->
-        <transition name="slide-fade">
+        <transition name="fade">
           <div v-if="error" class="error-alert">
-            <ion-icon name="alert-circle" class="error-icon"></ion-icon>
+            <ion-icon :icon="alertCircle" class="error-icon"></ion-icon>
             <span>{{ error }}</span>
             <button @click="clearError" class="close-error">
-              <ion-icon name="close"></ion-icon>
+              <ion-icon :icon="close"></ion-icon>
             </button>
           </div>
         </transition>
 
         <ion-card class="login-card">
           <ion-card-header>
-            <ion-card-title>Welcome Back</ion-card-title>
-            <ion-card-subtitle>Sign in to continue</ion-card-subtitle>
+            <img 
+            src="https://i.ibb.co/6D4R7xx/NEXONIX-3-7-1.png" 
+            alt="Nexonix Logo" 
+            class="logo-image"
+          />
+            <ion-card-title>Welcome Back </ion-card-title>
+            
+            <ion-card-subtitle>NEXONIX </ion-card-subtitle>
+           
           </ion-card-header>
           
-          <ion-card-content>
+          <ion-card-content class="login-content">
             <form @submit.prevent="login" class="login-form">
-              <div class="input-wrapper">
-                <ion-icon name="mail-outline" class="input-icon"></ion-icon>
-                <ion-input 
-                  v-model="email" 
-                  type="email" 
-                  placeholder="Email Address" 
-                  :class="{'invalid': emailError}"
-                  @blur="validateEmail"
-                ></ion-input>
+              <div class="input-group">
+                <label>Email Address</label>
+                <div class="input-wrapper">
+                  <ion-icon :icon="mailOutline" class="input-icon"></ion-icon>
+                  <ion-input 
+                    v-model="email" 
+                    type="email" 
+                    placeholder="Enter your email" 
+                    :class="{'invalid': emailError}"
+                    @blur="validateEmail"
+                  ></ion-input>
+                </div>
+                <div v-if="emailError" class="error-text">{{ emailError }}</div>
               </div>
-              <div v-if="emailError" class="error-text">{{ emailError }}</div>
 
-              <div class="input-wrapper">
-                <ion-icon name="lock-closed-outline" class="input-icon"></ion-icon>
-                <ion-input 
-                  v-model="password" 
-                  type="password" 
-                  placeholder="Password" 
-                  :class="{'invalid': passwordError}"
-                  @blur="validatePassword"
-                ></ion-input>
+              <div class="input-group">
+                <label>Password</label>
+                <div class="input-wrapper">
+                  <ion-icon :icon="lockClosedOutline" class="input-icon"></ion-icon>
+                  <ion-input 
+                    v-model="password" 
+                    type="password" 
+                    placeholder="Enter your password" 
+                    :class="{'invalid': passwordError}"
+                    @blur="validatePassword"
+                  ></ion-input>
+                </div>
+                <div v-if="passwordError" class="error-text">{{ passwordError }}</div>
               </div>
-              <div v-if="passwordError" class="error-text">{{ passwordError }}</div>
+
+              <div class="form-footer">
+                <ion-checkbox>Remember me</ion-checkbox>
+                <a href="#" class="forgot-link">Forgot Password?</a>
+              </div>
 
               <ion-button 
                 expand="block" 
                 type="submit" 
-                :disabled="!isFormValid"
+                :disabled="!isFormValid || isLoading"
                 class="login-button"
               >
                 <ion-spinner v-if="isLoading" name="crescent"></ion-spinner>
-                <span v-else>Log In</span>
+                <span v-else>Sign In</span>
               </ion-button>
             </form>
+
+            <div class="signup-link">
+              Don't have an account? <a href="#">Sign up now</a>
+            </div>
           </ion-card-content>
         </ion-card>
-
       </div>
     </ion-content>
   </ion-page>
@@ -82,12 +95,11 @@ import {
   IonCardTitle,
   IonCardSubtitle,
   IonCardContent,
-  IonItem,
-  IonLabel,
   IonInput,
   IonButton,
   IonIcon,
-  IonSpinner
+  IonSpinner,
+  IonCheckbox
 } from '@ionic/vue';
 import { mailOutline, lockClosedOutline, alertCircle, close } from 'ionicons/icons';
 import { mapActions } from 'vuex';
@@ -102,12 +114,19 @@ export default defineComponent({
     IonCardTitle,
     IonCardSubtitle,
     IonCardContent,
-    IonItem,
-    IonLabel,
     IonInput,
     IonButton,
     IonIcon,
-    IonSpinner
+    IonSpinner,
+    IonCheckbox
+  },
+  setup() {
+    return {
+      mailOutline,
+      lockClosedOutline,
+      alertCircle,
+      close
+    }
   },
   data() {
     return {
@@ -116,7 +135,8 @@ export default defineComponent({
       error: '',
       emailError: '',
       passwordError: '',
-      isLoading: false
+      isLoading: false,
+      rememberMe: false
     }
   },
   computed: {
@@ -132,7 +152,7 @@ export default defineComponent({
       if (!this.email) {
         this.emailError = 'Email is required';
       } else if (!emailRegex.test(this.email)) {
-        this.emailError = 'Invalid email format';
+        this.emailError = 'Please enter a valid email address';
       } else {
         this.emailError = '';
       }
@@ -165,12 +185,12 @@ export default defineComponent({
         const payload = {
           email: this.email,
           password: this.password,
+          rememberMe: this.rememberMe
         };
         
         const response = await this.USER_LOGIN(payload);
         const roleId = response.role?.[0];
         
-        // Routing logic based on role
         const routeMap = {
           1: { name: 'Adasbord' },
           2: { name: 'cldashbord' },
@@ -195,29 +215,25 @@ export default defineComponent({
         this.isLoading = false;
       }
     }
-  },
-  created() {
-    // Optional: If you want to use Ionicons
-    this.mailOutline = mailOutline;
-    this.lockClosedOutline = lockClosedOutline;
-    this.alertCircle = alertCircle;
-    this.close = close;
   }
 });
 </script>
 
 <style scoped>
-/* Global Styles */
 :root {
-  --primary-color: #4A90E2;
-  --background-color: #f4f6f9;
+  --primary-color: #00A67E;
+  --primary-light: #00C49A;
+  --primary-dark: #008F6B;
+  --background-color: #F5F7FA;
   --card-background: #ffffff;
-  --text-color: #333;
-  --error-color: #FF3B30;
+  --text-color: #2D3748;
+  --error-color: #E53E3E;
+  --gray-light: #A0AEC0;
 }
 
 .login-background {
-  background-color: var(--background-color);
+  --background: var(--background-color);
+  background: linear-gradient(145deg, #F5F7FA 0%, #E4E7EB 100%);
 }
 
 .login-container {
@@ -226,48 +242,65 @@ export default defineComponent({
   justify-content: center;
   align-items: center;
   min-height: 100vh;
-  padding: 1rem;
+  padding: 2rem 1rem;
+  
 }
 
 /* Logo Styles */
 .logo-container {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  margin-bottom: 2rem;
+  margin-bottom: 2.5rem;
+  text-align: center;
 }
 
-.logo-container h1 {
-  font-size: 2.5rem;
-  margin-top: 1rem;
-  color: var(--text-color);
-  font-weight: bold;
+.logo-image {
+  width: 150px;
+  height: auto;
+  margin-left: 100px; /* Pushes the image to the right in a flex container */
 }
 
-/* Login Card Styles */
+
+/* Card Styles */
 .login-card {
   width: 100%;
   max-width: 450px;
+  border-radius: 20px;
   box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
-  border-radius: 15px;
+  background: var(--card-background);
   overflow: hidden;
+}
+
+ion-card-header {
+  padding: 2rem 2rem 1rem;
+  text-align: center;
 }
 
 ion-card-title {
   font-size: 1.8rem;
   color: var(--text-color);
   font-weight: 700;
+  margin-bottom: 0.5rem;
 }
 
 ion-card-subtitle {
-  color: #666;
+  color: var(--gray-light);
+  font-size: 1.1rem;
 }
 
 /* Form Styles */
 .login-form {
-  display: flex;
-  flex-direction: column;
-  gap: 1rem;
+  padding: 1rem 2rem 2rem;
+}
+
+.input-group {
+  margin-bottom: 1.5rem;
+}
+
+.input-group label {
+  display: block;
+  margin-bottom: 0.5rem;
+  color: var(--text-color);
+  font-weight: 500;
+  font-size: 0.95rem;
 }
 
 .input-wrapper {
@@ -278,69 +311,81 @@ ion-card-subtitle {
 
 .input-icon {
   position: absolute;
-  left: 10px;
-  color: #888;
-  z-index: 10;
+  left: 1rem;
+  color: var(--gray-light);
+  font-size: 1.25rem;
 }
 
 ion-input {
-  padding-left: 40px;
-  background-color: #f0f0f0;
+  --padding-start: 3rem !important;
+  --padding-end: 1rem !important;
+  --padding-top: 1rem !important;
+  --padding-bottom: 1rem !important;
+  --background: #F7FAFC;
+  --color: var(--text-color);
+  margin: 0;
   border-radius: 10px;
+  font-size: 1rem;
 }
 
 .input-wrapper ion-input.invalid {
-  border: 2px solid var(--error-color);
+  --background: #FFF5F5;
+  border: 1px solid var(--error-color);
 }
 
 .error-text {
   color: var(--error-color);
-  font-size: 0.9rem;
-  margin-top: -0.5rem;
-  margin-bottom: 0.5rem;
+  font-size: 0.875rem;
+  margin-top: 0.5rem;
 }
 
-.forgot-password {
-  text-align: right;
-  margin-bottom: 1rem;
+/* Form Footer */
+.form-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1.5rem;
 }
 
-.forgot-password a {
+.forgot-link {
   color: var(--primary-color);
   text-decoration: none;
+  font-weight: 500;
+  font-size: 0.95rem;
 }
 
 /* Button Styles */
 .login-button {
   --background: var(--primary-color);
+  --background-hover: var(--primary-dark);
   --color: white;
-  height: 50px;
-  font-size: 1rem;
-  text-transform: uppercase;
-  letter-spacing: 1px;
-  border-radius: 10px;
+  height: 48px;
+  font-size: 1.1rem;
+  font-weight: 600;
+  margin: 1rem 0;
+  --border-radius: 10px;
 }
 
 .login-button:disabled {
-  opacity: 0.6;
+  --background: var(--gray-light);
 }
 
-/* Error Alert Styles */
+/* Error Alert */
 .error-alert {
   display: flex;
   align-items: center;
-  background-color: #FFE5E5;
+  background-color: #FFF5F5;
   color: var(--error-color);
-  padding: 0.75rem;
+  padding: 1rem;
   border-radius: 10px;
-  margin-bottom: 1rem;
+  margin-bottom: 1.5rem;
   width: 100%;
   max-width: 450px;
 }
 
 .error-icon {
-  margin-right: 10px;
-  color: var(--error-color);
+  margin-right: 0.75rem;
+  font-size: 1.25rem;
 }
 
 .close-error {
@@ -348,31 +393,52 @@ ion-input {
   border: none;
   color: var(--error-color);
   margin-left: auto;
+  padding: 0.5rem;
   cursor: pointer;
 }
 
 /* Signup Link */
 .signup-link {
-  margin-top: 1rem;
-  color: #666;
+  text-align: center;
+  margin-top: 2rem;
+  color: var(--gray-light);
+  font-size: 0.95rem;
 }
 
 .signup-link a {
   color: var(--primary-color);
   text-decoration: none;
-  font-weight: bold;
+  font-weight: 600;
+  margin-left: 0.5rem;
 }
 
 /* Transitions */
-.slide-fade-enter-active {
-  transition: all 0.3s ease-out;
+.fade-enter-active,
+.fade-leave-active {
+  transition: opacity 0.3s ease;
 }
-.slide-fade-leave-active {
-  transition: all 0.3s cubic-bezier(1, 0.5, 0.8, 1);
-}
-.slide-fade-enter-from,
-.slide-fade-leave-to {
-  transform: translateY(-20px);
+
+.fade-enter-from,
+.fade-leave-to {
   opacity: 0;
+}
+
+/* Responsive Styles */
+@media (max-width: 480px) {
+  .login-container {
+    padding: 1rem;
+  }
+  
+  .logo-image {
+    width: 150px;
+  }
+  
+  .login-card {
+    box-shadow: none;
+  }
+  
+  .login-form {
+    padding: 1rem;
+  }
 }
 </style>

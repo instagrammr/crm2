@@ -95,7 +95,9 @@
                   <ion-input v-model="userId" ref="input" type="hidden"></ion-input>
                   <br /> 
                   <ion-input v-model="name" ref="input" type="text" placeholder="Name" fill="outline"></ion-input>
-                  <br />  
+                  <br />
+                  <ion-input v-model="date" ref="input" type="date" placeholder="Date" fill="outline"></ion-input>
+                  <br />    
                   <ion-input v-model="reason" ref="input" type="text" placeholder="Reason" fill="outline"></ion-input>
                   <br />
                   <ion-select v-model="dayId" placeholder="Select leave duration">
@@ -130,6 +132,8 @@
                   <br /> 
                   <ion-input v-model="reason" ref="input" type="text" placeholder="name" fill="outline"></ion-input>
                   <br />  
+                  <ion-input v-model="date" ref="input" type="date" placeholder="Date" fill="outline"></ion-input>
+                  <br /> 
                   <ion-row>
                     <ion-col>
                       <ion-select v-model="adminId1" placeholder="Select admin">
@@ -208,6 +212,7 @@ export default defineComponent({
     return {
       name: '',
       reason: '',
+      date: '',
       addOutline,
       chevronBackOutline,
       trash,
@@ -270,6 +275,7 @@ export default defineComponent({
       const payload = {
         name: this.name,
         reason: this.reason,
+        date: this.date || null,
         requestStatusId: this.requestStatusId,
         approverId: this.adminId,
         requesterId: this.userId,
@@ -293,6 +299,14 @@ export default defineComponent({
         if (leadData) {
           this.name = leadData.name;
           this.reason = leadData.reason;
+          if (leadData.date) {
+            const parsedDate = new Date(leadData.date);
+            this.date = isNaN(parsedDate.getTime())
+              ? null // Handle invalid dates
+              : parsedDate.toISOString().split('T')[0];
+          } else {
+            this.date = null; // Set to null if no date is provided
+          }
           this.adminId1 = leadData.approverId;
           this.dayId = leadData.leavedayStatusId;
           this.currentleaveId = leaveId;
@@ -310,6 +324,7 @@ export default defineComponent({
         id: this.currentleaveId,
         name: this.name,
         reason: this.reason,
+        date: this.date,
         approverId: this.adminId1,
         leavedayStatusId: this.dayId	
       };

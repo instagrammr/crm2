@@ -3,7 +3,7 @@
     <ion-app>
       <ion-split-pane content-id="main-content">
         <SideMenu />
-        
+
         <div class="ion-page" id="main-content">
           <ion-header>
             <ion-toolbar>
@@ -17,7 +17,7 @@
               </ion-button>
             </ion-toolbar>
           </ion-header>
-  
+
           <ion-content>
             <div class="leave-container1">
               <div v-if="totalLeaveListId && totalLeaveListId.rows">
@@ -33,16 +33,19 @@
                     </tr>
                   </thead>
                   <tbody>
-                    <tr v-for="leave,index in totalLeaveListId.rows" :key="leave.id">
+                    <tr v-for="leave, index in totalLeaveListId.rows" :key="leave.id">
                       <td>{{ index + 1 }}</td>
                       <td>
                         <ion-avatar>
-                          <img src="https://static.vecteezy.com/system/resources/thumbnails/042/714/998/small/3d-illustration-real-estate-real-estate-agent-male-png.png" alt="Student" />
+                          <img
+                            src="https://static.vecteezy.com/system/resources/thumbnails/042/714/998/small/3d-illustration-real-estate-real-estate-agent-male-png.png"
+                            alt="Student" />
                         </ion-avatar>
                       </td>
                       <td>{{ leave.name }}</td>
                       <td>{{ leave.reason }}</td>
-                      <td>{{ leave.request_status && leave.request_status.status_name ? leave.request_status.status_name : 'N/A' }}</td>
+                      <td>{{ leave.request_status && leave.request_status.status_name ? leave.request_status.status_name
+                        : 'N/A' }}</td>
                       <td>
                         <ion-button color="primary" size="small" @click="openUpdateModal(leave.id)">
                           <ion-icon :icon="createOutline"></ion-icon>
@@ -88,23 +91,25 @@
                       <ion-select v-model="adminId" placeholder="Select admin">
                         <ion-select-option v-for="user in totaladminList" :key="user.id" :value="user.id">
                           {{ user.username }}
-                        </ion-select-option>    
+                        </ion-select-option>
                       </ion-select>
                     </ion-col>
                   </ion-row>
                   <ion-input v-model="userId" ref="input" type="hidden"></ion-input>
-                  <br /> 
+                  <br />
                   <ion-input v-model="name" ref="input" type="text" placeholder="Name" fill="outline"></ion-input>
-                  <br />  
+                  <br />
                   <ion-input v-model="reason" ref="input" type="text" placeholder="Reason" fill="outline"></ion-input>
+                  <br />
+                  <ion-input v-model="date" ref="input" type="date" placeholder="Date" fill="outline"></ion-input>
                   <br />
                   <ion-select v-model="dayId" placeholder="Select leave duration">
                     <ion-select-option v-for="duration in totaldayList" :key="duration.id" :value="duration.id">
                       {{ duration.status_name }}
-                    </ion-select-option>    
-                  </ion-select>   
+                    </ion-select-option>
+                  </ion-select>
                 </div>
-                <ion-button expand="block" class="save" @click="addLeave">Save</ion-button>    
+                <ion-button expand="block" class="save" @click="addLeave">Save</ion-button>
               </ion-content>
             </ion-modal>
 
@@ -127,25 +132,27 @@
                 <div class="form">
                   <br />
                   <ion-input v-model="name" ref="input" type="text" fill="outline"></ion-input>
-                  <br /> 
+                  <br />
                   <ion-input v-model="reason" ref="input" type="text" placeholder="name" fill="outline"></ion-input>
-                  <br />  
+                  <br />
+                  <ion-input v-model="date" ref="input" type="date" placeholder="Date" fill="outline"></ion-input>
+                  <br />
                   <ion-row>
                     <ion-col>
                       <ion-select v-model="adminId1" placeholder="Select admin">
                         <ion-select-option v-for="user in totaladminList" :key="user.id" :value="user.id">
                           {{ user.username }}
-                        </ion-select-option>    
+                        </ion-select-option>
                       </ion-select>
                     </ion-col>
                     <ion-select v-model="dayId" placeholder="Select leave duration">
                       <ion-select-option v-for="duration in totaldayList" :key="duration.id" :value="duration.id">
                         {{ duration.status_name }}
-                      </ion-select-option>    
-                    </ion-select> 
-                  </ion-row>     
+                      </ion-select-option>
+                    </ion-select>
+                  </ion-row>
                 </div>
-                <ion-button expand="block" class="save" @click="updateLead">Save</ion-button>    
+                <ion-button expand="block" class="save" @click="updateLead">Save</ion-button>
               </ion-content>
             </ion-modal>
 
@@ -182,14 +189,14 @@
 import { defineComponent } from 'vue';
 import { mapActions, mapState } from 'vuex';
 import { alertController } from '@ionic/vue';
-import { 
-  IonApp, IonContent, IonHeader, IonToolbar, IonTitle, 
-  IonButtons, IonMenuButton, IonButton, IonIcon, 
+import {
+  IonApp, IonContent, IonHeader, IonToolbar, IonTitle,
+  IonButtons, IonMenuButton, IonButton, IonIcon,
   IonSplitPane, IonGrid, IonRow, IonCol,
   IonAvatar, IonPage, IonInput, IonBadge,
   IonModal, IonSelect, IonSelectOption, IonFab, IonFabButton
 } from '@ionic/vue';
-import { 
+import {
   addOutline, chevronBackOutline, createOutline, trash, personOutline, notificationsOutline
 } from 'ionicons/icons';
 import SideMenu from '../../components/Documentationside.vue';
@@ -198,8 +205,8 @@ import SideMenu from '../../components/Documentationside.vue';
 export default defineComponent({
   name: 'LeaveRequest',
   components: {
-    IonApp, IonContent, IonHeader, IonToolbar, IonTitle, 
-    IonButtons, IonMenuButton, IonButton, IonIcon, 
+    IonApp, IonContent, IonHeader, IonToolbar, IonTitle,
+    IonButtons, IonMenuButton, IonButton, IonIcon,
     IonSplitPane, IonGrid, IonRow, IonCol,
     IonAvatar, IonPage, IonInput,
     IonModal, IonSelect, IonSelectOption, IonFab, IonFabButton,
@@ -209,6 +216,7 @@ export default defineComponent({
     return {
       name: '',
       reason: '',
+      date: '',
       addOutline,
       chevronBackOutline,
       trash,
@@ -257,12 +265,12 @@ export default defineComponent({
     handledelete(leave) {
       this.opendeleteDialog(leave);
     },
-    
+
     opendeleteDialog(leave) {
       this.deleteItem = leave;
       this.showDelete = true;
     },
-    
+
     closeDeleteDialog() {
       this.showDelete = false;
       this.deleteItem = {};
@@ -272,10 +280,11 @@ export default defineComponent({
       const payload = {
         name: this.name,
         reason: this.reason,
+        date: this.date || null,
         requestStatusId: this.requestStatusId,
         approverId: this.adminId,
         requesterId: this.userId,
-        leavedayStatusId: this.dayId	
+        leavedayStatusId: this.dayId
       };
 
       try {
@@ -284,17 +293,25 @@ export default defineComponent({
         await this.fetchleadData();
       } catch (error) {
         console.error('Error adding:', error);
-        this.errorMessage = 'Failed to create leave. Please try again.'; 
+        this.errorMessage = 'Failed to create leave. Please try again.';
       }
     },
 
     async openUpdateModal(leaveId) {
       try {
         const leadData = await this.totalLeaveListId.rows.find((leave) => leave.id === leaveId);
-        
+
         if (leadData) {
           this.name = leadData.name;
           this.reason = leadData.reason;
+          if (leadData.date) {
+            const parsedDate = new Date(leadData.date);
+            this.date = isNaN(parsedDate.getTime())
+              ? null // Handle invalid dates
+              : parsedDate.toISOString().split('T')[0];
+          } else {
+            this.date = null; // Set to null if no date is provided
+          }
           this.adminId1 = leadData.approverId;
           this.dayId = leadData.leavedayStatusId;
           this.currentleaveId = leaveId;
@@ -312,8 +329,9 @@ export default defineComponent({
         id: this.currentleaveId,
         name: this.name,
         reason: this.reason,
+        date: this.date,
         approverId: this.adminId1,
-        leavedayStatusId: this.dayId	
+        leavedayStatusId: this.dayId
       };
 
       try {
@@ -364,7 +382,7 @@ export default defineComponent({
   },
   async mounted() {
     try {
-      this.userId = this.$route.params.id; 
+      this.userId = this.$route.params.id;
       await this.fetchleadData();
       this.notificationCount = this.totaltodayLeadCount;
       if (this.totaltodayLeadCount > 0) {
@@ -376,10 +394,8 @@ export default defineComponent({
   }
 });
 </script>
-    
-  <style>
 
-
+<style>
 .notification-badge {
   position: absolute;
   top: 7px;
@@ -405,12 +421,13 @@ export default defineComponent({
 }
 
 /* Container Styles */
-.leave-container1{
+.leave-container1 {
   margin-top: 1%;
   margin-left: 1%;
   margin-right: 1%;
 
 }
+
 /* Table Styles */
 .leave-table {
   width: 100%;
@@ -443,6 +460,7 @@ export default defineComponent({
 .leave-table tr:last-child td {
   border-bottom: none;
 }
+
 .leave-table th {
   background: #000;
   color: white;
@@ -451,8 +469,10 @@ export default defineComponent({
   font-weight: 600;
   font-size: 14px;
   text-transform: uppercase;
-  width: 16.66%; /* Makes all columns equal width (100% ÷ 6 columns) */
-  table-layout: fixed; /* Ensures equal width distribution */
+  width: 16.66%;
+  /* Makes all columns equal width (100% ÷ 6 columns) */
+  table-layout: fixed;
+  /* Ensures equal width distribution */
 }
 
 .leave-table {
@@ -463,8 +483,10 @@ export default defineComponent({
   border-radius: 8px;
   overflow: hidden;
   margin-bottom: 20px;
-  table-layout: fixed; /* Add this line to enforce equal column widths */
+  table-layout: fixed;
+  /* Add this line to enforce equal column widths */
 }
+
 .leave-table tr:hover {
   background-color: #f8f9fa;
 }
@@ -529,7 +551,7 @@ ion-select {
 
 /* Button Styles */
 ion-button.save {
- 
+
   margin: 16px;
   --border-radius: 8px;
   font-weight: 600;
@@ -637,5 +659,4 @@ ion-button:active {
 .mb-2 {
   margin-bottom: 8px;
 }
-
-  </style>
+</style>
