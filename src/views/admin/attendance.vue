@@ -48,31 +48,31 @@
                     </ion-card>
                   </ion-col>
 
-                  <!-- Monthly Stats -->
+                  <!-- Late Today -->
                   <ion-col size-xs="12" size-sm="3">
                     <ion-card class="stats-card animate-gradient-3">
                       <ion-card-header>
-                        <ion-card-title class="stats-title">Monthly Stats</ion-card-title>
+                        <ion-card-title class="stats-title">Today's Late</ion-card-title>
                       </ion-card-header>
                       <ion-card-content>
                         <div class="stats-content">
-                          <div class="stats-number">{{ monthlyPresentCount }}/{{ monthlyAbsentCount }}</div>
-                          <div class="stats-label">Present/Absent This Month</div>
+                          <div class="stats-number">{{ todayLateCount }}</div>
+                          <div class="stats-label">Late Today</div>
                         </div>
                       </ion-card-content>
                     </ion-card>
                   </ion-col>
 
-                  <!-- Filtered Stats -->
+                  <!-- Total Today -->
                   <ion-col size-xs="12" size-sm="3">
                     <ion-card class="stats-card animate-gradient-4">
                       <ion-card-header>
-                        <ion-card-title class="stats-title">Filtered Stats</ion-card-title>
+                        <ion-card-title class="stats-title">Total Today</ion-card-title>
                       </ion-card-header>
                       <ion-card-content>
                         <div class="stats-content">
-                          <div class="stats-number">{{ filteredPresentCount }}/{{ filteredAbsentCount }}</div>
-                          <div class="stats-label">Present/Absent {{ appliedDate ? '(Filtered)' : '(Total)' }}</div>
+                          <div class="stats-number">{{ todayTotalCount }}</div>
+                          <div class="stats-label">Total Records Today</div>
                         </div>
                       </ion-card-content>
                     </ion-card>
@@ -138,11 +138,67 @@
                 </ion-content>
               </ion-modal>
 
-              <!-- Attendance List Card -->
+              <!-- Monthly User Statistics Card -->
+              <ion-card class="monthly-stats-card">
+                <ion-card-header>
+                  <ion-card-title class="attendance-title">
+                    Monthly User Statistics
+                    <small class="date-filter-text">
+                      ({{ formatDisplayDate(new Date()) }})
+                    </small>
+                  </ion-card-title>
+                </ion-card-header>
+
+                <ion-card-content>
+                  <div class="table-container" v-if="monthlyUserStats.length">
+                    <table class="attendance-table">
+                      <thead>
+                        <tr>
+                          <th>Username</th>
+                          <th>Present Days</th>
+                          <th>Absent Days</th>
+                          <th>Late Days</th>
+                          <th>Total Days</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        <tr v-for="stat in monthlyUserStats" :key="stat.username">
+                          <td class="username-cell">{{ stat.username }}</td>
+                          <td>
+                            <ion-badge color="success" class="status-badge">
+                              {{ stat.present }}
+                            </ion-badge>
+                          </td>
+                          <td>
+                            <ion-badge color="danger" class="status-badge">
+                              {{ stat.absent }}
+                            </ion-badge>
+                          </td>
+                          <td>
+                            <ion-badge color="warning" class="status-badge">
+                              {{ stat.late }}
+                            </ion-badge>
+                          </td>
+                          <td>
+                            <ion-badge color="medium" class="status-badge">
+                              {{ stat.present + stat.absent + stat.late }}
+                            </ion-badge>
+                          </td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </div>
+                  <p v-else class="no-records-text">
+                    No monthly statistics available.
+                  </p>
+                </ion-card-content>
+              </ion-card>
+
+              <!-- Daily Attendance List Card -->
               <ion-card class="attendance-table-card">
                 <ion-card-header>
                   <ion-card-title class="attendance-title">
-                    Attendance List
+                    Daily Attendance List
                     <small v-if="appliedDate" class="date-filter-text">
                       ({{ formatDisplayDate(appliedDate) }})
                     </small>
@@ -192,7 +248,8 @@
   </ion-page>
 </template>
 
-<script>import { 
+<script>
+import { 
   IonApp, 
   IonContent, 
   IonHeader, 
@@ -276,6 +333,54 @@ export default defineComponent({
       });
     },
     
+    monthlyUserStats() {
+      if (!this.totalAttendaceList) return [];
+      
+      // Get current month's first and last day
+      const now = new Date();
+      const firstDayOfMonth = new Date(now.getFullYear(), now.getMonth(), 1);
+      const lastDayOfMonth = new Date(now.getFullYear(), now.getMonth() + 1, 0);
+      
+      // Group attendance by username
+      const userStats = {};
+      
+      this.totalAttendaceList.forEach(attendance => {
+        const attendanceDate = new Date(attendance.login_time || attendance.createdAt);
+        
+        // Only process current month's attendance
+        if (attendanceDate >= firstDayOfMonth && attendanceDate <= lastDayOfMonth) {
+          const username = attendance.user.username;
+          
+          if (!userStats[username]) {
+            userStats[username] = {
+              username,
+              present: 0,
+              absent: 0,
+              late: 0
+            };
+          }
+          
+          const status = attendance.attendance_status.status_name.toLowerCase();
+          switch(status) {
+            case 'present':
+              userStats[username].present++;
+              break;
+            case 'absent':
+              userStats[username].absent++;
+              break;
+            case 'late':
+              userStats[username].late++;
+              break;
+          }
+        }
+      });
+      
+      // Convert to array and sort by username
+      return Object.values(userStats).sort((a, b) => 
+        a.username.localeCompare(b.username)
+      );
+    },
+    
     todayPresentCount() {
       if (!this.totalAttendaceList) return 0;
 
@@ -298,42 +403,19 @@ export default defineComponent({
       }).length;
     },
 
-    monthlyPresentCount() {
+    todayLateCount() {
       if (!this.totalAttendaceList) return 0;
 
-      const now = new Date();
-      const firstDayOfMonth = new Date(now.getFullYear(), now.getMonth(), 1);
+      const today = new Date().toISOString().split('T')[0];
       return this.totalAttendaceList.filter(attendance => {
-        const attendanceDate = new Date(attendance.login_time || attendance.createdAt);
-        return attendanceDate >= firstDayOfMonth && 
-               attendance.attendance_status.status_name.toLowerCase() === 'present';
+        const attendanceDate = new Date(attendance.login_time || attendance.createdAt).toISOString().split('T')[0];
+        return attendanceDate === today && 
+               attendance.attendance_status.status_name.toLowerCase() === 'late';
       }).length;
     },
 
-    monthlyAbsentCount() {
-      if (!this.totalAttendaceList) return 0;
-
-      const now = new Date();
-      const firstDayOfMonth = new Date(now.getFullYear(), now.getMonth(), 1);
-      return this.totalAttendaceList.filter(attendance => {
-        const attendanceDate = new Date(attendance.login_time || attendance.createdAt);
-        return attendanceDate >= firstDayOfMonth && 
-               attendance.attendance_status.status_name.toLowerCase() === 'absent';
-      }).length;
-    },
-
-    filteredPresentCount() {
-      if (!this.attendanceList) return 0;
-      return this.attendanceList.filter(attendance => 
-        attendance.attendance_status.status_name.toLowerCase() === 'present'
-      ).length;
-    },
-
-    filteredAbsentCount() {
-      if (!this.attendanceList) return 0;
-      return this.attendanceList.filter(attendance => 
-        attendance.attendance_status.status_name.toLowerCase() === 'absent'
-      ).length;
+    todayTotalCount() {
+      return this.todayPresentCount + this.todayAbsentCount + this.todayLateCount;
     }
   },
   methods: {
@@ -356,7 +438,7 @@ export default defineComponent({
     
     async fetchLeadData() {
       try {
-        await this.fetchtotalattendancelist(); 
+        await this.fetchtotalattendancelist();
       } catch (error) {
         console.error('Error fetching attendance data:', error);
       }
