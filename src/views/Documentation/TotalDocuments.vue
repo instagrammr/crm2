@@ -189,10 +189,7 @@
                       fill="solid" class="form-input"></ion-input>
                     <ion-button @click="saveRemark">Save Remark</ion-button>
                   </div>
-                  <!-- <ion-input v-model="Remark" label="Remark" type="text" labelPlacement="floating" fill="solid"
-                    class="form-input"></ion-input>
-                  <ion-input v-if="requiresRemark" v-model="newRemarkDate" label="remark Date" type="date"
-                    labelPlacement="floating" fill="solid" class="form-input"></ion-input> -->
+        
                   <ion-input v-model="university" label="university" type="text" labelPlacement="floating" fill="solid"
                     class="form-input"></ion-input>
                   <ion-input v-model="course" label="course" type="text" labelPlacement="floating" fill="solid"
@@ -429,44 +426,57 @@
                     </ul>
                   </div>
                   <div class="detail-section">
-                    <h4 class="section-title">UPLOADED DOCUMENTS</h4>
-                    <ion-input v-model="pass_no" label="Passport no" type="text" labelPlacement="floating" fill="solid"
-                      class="form-input" readonly></ion-input>
-                    <ion-input v-model="aadhar_no" label="Aadhar no" type="text" labelPlacement="floating" fill="solid"
-                      class="form-input" readonly></ion-input>
-                    <ion-input v-model="pan_no" label="Pan no" type="text" labelPlacement="floating" fill="solid"
-                      class="form-input" readonly></ion-input>
+                  <h4 class="section-title">UPLOADED DOCUMENTS</h4>
+                  <ion-input v-model="pass_no" label="Passport no" type="text" labelPlacement="floating" 
+                    fill="solid" class="form-input" readonly></ion-input>
+                  <ion-input v-model="aadhar_no" label="Aadhar no" type="text" labelPlacement="floating" 
+                    fill="solid" class="form-input" readonly></ion-input>
+                  <ion-input v-model="pan_no" label="Pan no" type="text" labelPlacement="floating" 
+                    fill="solid" class="form-input" readonly></ion-input>
 
-                    <!-- Passport -->
-                    <div class="document-item">
-                      <ion-label class="image-label">Passport Images</ion-label>
-                      <div class="preview-container" v-if="passimages?.length">
-                        <div v-for="(image, index) in passimages" :key="index" class="preview-wrapper">
-                          <img :src="image.url || image" alt="Passport Image" class="preview-image">
-                        </div>
-                      </div>
-                    </div>
+                  <!-- Passport -->
+                  <div class="document-item">
+                    <ion-label class="image-label">Passport Images</ion-label>
+                    <div class="preview-container" v-if="passimages?.length">
+                      <div v-for="(image, index) in passimages" :key="index" class="preview-wrapper">
+                        <img :src="image.url || image" alt="Passport Image" class="preview-image">
+                        <ion-button fill="clear" @click="downloadImage(image.url || image, 'passport', index)" 
+                          class="download-btn">
+                          <ion-icon :icon="downloadOutline"></ion-icon>
 
-                    <!-- Aadhar -->
-                    <div class="document-item">
-                      <ion-label class="image-label">Aadhar Images</ion-label>
-                      <div class="preview-container" v-if="aadharimages?.length">
-                        <div v-for="(image, index) in aadharimages" :key="index" class="preview-wrapper">
-                          <img :src="image.url || image" alt="Aadhar Image" class="preview-image">
-                        </div>
-                      </div>
-                    </div>
-
-                    <!-- Pan -->
-                    <div class="document-item">
-                      <ion-label class="image-label">Pan Images</ion-label>
-                      <div class="preview-container" v-if="panimages?.length">
-                        <div v-for="(image, index) in panimages" :key="index" class="preview-wrapper">
-                          <img :src="image.url || image" alt="Pan Image" class="preview-image">
-                        </div>
+                        </ion-button>
                       </div>
                     </div>
                   </div>
+
+                  <!-- Aadhar -->
+                  <div class="document-item">
+                    <ion-label class="image-label">Aadhar Images</ion-label>
+                    <div class="preview-container" v-if="aadharimages?.length">
+                      <div v-for="(image, index) in aadharimages" :key="index" class="preview-wrapper">
+                        <img :src="image.url || image" alt="Aadhar Image" class="preview-image">
+                        <ion-button fill="clear" @click="downloadImage(image.url || image, 'aadhar', index)" 
+                          class="download-btn">
+                          <ion-icon :icon="downloadOutline"></ion-icon>
+                        </ion-button>
+                      </div>
+                    </div>
+                  </div>
+
+                  <!-- Pan -->
+                  <div class="document-item">
+                    <ion-label class="image-label">Pan Images</ion-label>
+                    <div class="preview-container" v-if="panimages?.length">
+                      <div v-for="(image, index) in panimages" :key="index" class="preview-wrapper">
+                        <img :src="image.url || image" alt="Pan Image" class="preview-image">
+                        <ion-button fill="clear" @click="downloadImage(image.url || image, 'pan', index)" 
+                          class="download-btn">
+                          <ion-icon :icon="downloadOutline"></ion-icon>
+                        </ion-button>
+                      </div>
+                    </div>
+                  </div>
+                </div>
                 </div>
               </ion-content>
             </ion-modal>
@@ -506,6 +516,7 @@
   </ion-page>
 </template>
 <script>
+import { toastController } from '@ionic/vue';
 import { defineComponent, ref } from 'vue';
 import { mapActions, mapState } from 'vuex';
 import { alertController } from '@ionic/vue';
@@ -525,7 +536,7 @@ import {
   refreshCircleOutline, callOutline, locationOutline,
   timeOutline, globeOutline, createOutline, eyeOutline,
   trash, chevronBackOutline, notificationsOutline, closeOutline,
-  checkmarkCircleOutline
+  checkmarkCircleOutline,downloadOutline
 } from 'ionicons/icons';
 import SideMenu from '../../components/Documentationside.vue';
 
@@ -541,6 +552,7 @@ export default defineComponent({
   },
   data() {
     return {
+      downloadOutline  ,
       showViewModals: false, // Add this
       selectedLead: null,
       showUpdate: false,
@@ -617,6 +629,118 @@ export default defineComponent({
     navigateToNoti() {
       this.$router.push({ name: 'NotificationDoc' });
     },
+
+    async downloadImage(imageUrl, type, index) {
+  try {
+    // Automatically redirect HTTP to HTTPS
+    if (imageUrl.startsWith("http://")) {
+      imageUrl = imageUrl.replace("http://", "https://");
+    }
+
+    // Show loading toast
+    const loadingToast = await toastController.create({
+      message: 'Downloading image...',
+      duration: 2000,
+      position: 'bottom',
+      color: 'primary'
+    });
+    await loadingToast.present();
+
+    // Add CORS headers to the request
+    const response = await fetch(imageUrl, {
+      method: 'GET',
+      mode: 'cors',
+      headers: {
+        'Accept': 'image/*, application/octet-stream'
+      }
+    });
+
+    if (!response.ok) {
+      throw new Error(`HTTP error! status: ${response.status}`);
+    }
+
+    // Convert response to blob
+    const blob = await response.blob();
+
+    // Create object URL
+    const url = window.URL.createObjectURL(blob);
+
+    // Use Ionic Capacitor File API for mobile devices
+    if (this.$capacitor && this.$capacitor.Plugins.Filesystem) {
+      const { Filesystem } = this.$capacitor.Plugins;
+
+      // Convert blob to base64
+      const reader = new FileReader();
+      reader.readAsDataURL(blob);
+      reader.onloadend = async () => {
+        const base64Data = reader.result.split(',')[1];
+
+        try {
+          // Save file using Capacitor
+          await Filesystem.writeFile({
+            path: `${type}_document_${index + 1}.jpg`,
+            data: base64Data,
+            directory: 'DOCUMENTS',
+            recursive: true
+          });
+
+          // Success toast
+          const successToast = await toastController.create({
+            message: 'Image saved successfully',
+            duration: 2000,
+            position: 'bottom',
+            color: 'success'
+          });
+          await successToast.present();
+        } catch (error) {
+          console.error('Filesystem write error:', error);
+          throw error;
+        }
+      };
+    } else {
+      // Browser download fallback
+      const link = document.createElement('a');
+      link.href = url;
+      link.download = `${type}_document_${index + 1}.jpg`;
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+
+      // Success toast
+      const successToast = await toastController.create({
+        message: 'Image downloaded successfully',
+        duration: 2000,
+        position: 'bottom',
+        color: 'success'
+      });
+      await successToast.present();
+    }
+
+    // Cleanup
+    window.URL.revokeObjectURL(url);
+
+  } catch (error) {
+    console.error('Download failed:', error);
+
+    // Error toast
+    const errorToast = await toastController.create({
+      message: 'Failed to download image. Please try again later.',
+      duration: 3000,
+      position: 'bottom',
+      color: 'danger',
+      buttons: [
+        {
+          text: 'Dismiss',
+          role: 'cancel'
+        }
+      ]
+    });
+    await errorToast.present();
+  }
+}
+,
+
+
     async showNewLeadAlert() {
       const alert = await alertController.create({
         header: 'New Lead',
@@ -945,6 +1069,52 @@ export default defineComponent({
 
 
 <style scoped>
+
+.preview-wrapper {
+  position: relative;
+  display: inline-block;
+  margin: 8px;
+}
+
+.preview-image {
+  max-width: 200px;
+  height: auto;
+  border-radius: 8px;
+}
+
+.download-btn {
+  position: absolute;
+  bottom: 8px;
+  right: 8px;
+  --padding-start: 8px;
+  --padding-end: 8px;
+  --background: rgba(255, 255, 255, 0.9);
+  
+  border-radius: 50%;
+  opacity: 0;
+  transition: opacity 0.2s ease-in-out;
+}
+
+.preview-wrapper:hover .download-btn {
+  opacity: 1;
+}
+
+.document-item {
+  margin-bottom: 20px;
+}
+
+.image-label {
+  font-weight: 500;
+  margin-bottom: 10px;
+  display: block;
+}
+
+.preview-container {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
 .notification-badge {
   position: absolute;
   top: 7px;
