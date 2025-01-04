@@ -12,7 +12,12 @@
               </ion-buttons>
               <ion-title>Total Leads</ion-title>
               <ion-buttons slot="end">
-                <ion-searchbar placeholder="Search here" class="custom-searchbar"></ion-searchbar>
+                <ion-searchbar 
+                  placeholder="Search here" 
+                  class="custom-searchbar"
+                  v-model="searchQuery"
+                  @ionInput="handleSearch"
+                ></ion-searchbar>
               </ion-buttons>
             </ion-toolbar>
           </ion-header>
@@ -21,7 +26,7 @@
             <!-- Stats Cards -->
             <ion-grid class="stats-grid">
               <ion-row>
-                <ion-col size="6" size-md="4">
+                <ion-col >
                   <div class="stats-card primary-gradient">
                     <div class="stats-icon">
                       <ion-icon :icon="peopleOutline"></ion-icon>
@@ -29,22 +34,19 @@
                     <div class="stats-content">
                       <h4>Total Leads</h4>
                       <span class="stats-value">{{ totalAllLeadCount }}</span>
-
                     </div>
                   </div>
                 </ion-col>
-
               </ion-row>
             </ion-grid>
+
             <!-- Leads List -->
-            <div class="leads-list" v-if="totalLeadList">
-              <ion-card v-for="lead in totalLeadList" :key="lead.id">
+            <div class="leads-list" v-if="filteredLeads.length">
+              <ion-card v-for="lead in filteredLeads" :key="lead.id">
                 <ion-card-content>
                   <div class="lead-header">
                     <div class="lead-info">
-                      <h3>{{ lead.student_name }}
-                   
-                      </h3>
+                      <h3>{{ lead.student_name }}</h3>
                       <div class="info-row">
                         <span><ion-icon :icon="callOutline"></ion-icon>{{ lead.mobile }}</span>
                         <span><ion-icon :icon="locationOutline"></ion-icon>{{ lead.location }}</span>
@@ -54,23 +56,23 @@
                       </div>
                       <div class="source-row">
                         <span>Lead Source: {{ lead.lead_source }}</span><br />
-                     
                       </div>
                       <br />
-                 
                     </div>
                     <div class="action-buttons">
                       <ion-button fill="clear" size="small" @click="openUpdateModal(lead.id)">
                         <ion-icon slot="icon-only" :icon="eyeOutline"></ion-icon>
                       </ion-button>
-                      <!-- <ion-button fill="clear" size="small">
-                        <ion-icon slot="icon-only" :icon="eyeOutline"></ion-icon>
-                      </ion-button> -->
                     </div>
                   </div>
                 </ion-card-content>
               </ion-card>
             </div>
+            <div v-else-if="searchQuery" class="no-results">
+              <p>No leads found matching your search.</p>
+            </div>
+
+            <!-- Update Modal -->
             <ion-modal :isOpen="showUpdate" @didDismiss="showUpdate = false" class="modal" full-screen
               css-class="full-screen-modal">
               <ion-header>
@@ -79,10 +81,9 @@
                     <ion-row>
                       <ion-col size="auto">
                         <ion-button class="back" fill="clear" @click="closeModalAndRefresh">
-                          <ion-icon :icon="chevronBackOutline"></ion-icon>
+                          <ion-icon :icon="chevronBackOutline" style="color: black;"></ion-icon>
                         </ion-button>
                       </ion-col>
-
                     </ion-row>
                   </ion-grid>
                 </ion-toolbar>
@@ -106,35 +107,28 @@
                   <ion-input v-model="country" ref="input" type="text" placeholder="Country" fill="outline"></ion-input>
                   <br />
                   <ion-label>Lead Source</ion-label>
-                  <ion-input v-model="source" ref="input" type="text" placeholder="Lead Source"
-                    fill="outline"></ion-input>
+                  <ion-input v-model="source" ref="input" type="text" placeholder="Lead Source" fill="outline"></ion-input>
                   <br />
                   <ion-label>mark tenth</ion-label>
-                  <ion-input v-model="tenth" ref="input" type="number" placeholder="mark tenth"
-                    fill="outline"></ion-input>
+                  <ion-input v-model="tenth" ref="input" type="number" placeholder="mark tenth" fill="outline"></ion-input>
                   <br />
                   <ion-label>mark twelth</ion-label>
-                  <ion-input v-model="twelth" ref="input" type="number" placeholder=" mark twelth"
-                    fill="outline"></ion-input>
+                  <ion-input v-model="twelth" ref="input" type="number" placeholder="mark twelth" fill="outline"></ion-input>
                   <br />
                   <ion-label>mark degree</ion-label>
-                  <ion-input v-model="degree" ref="input" type="number" placeholder="mark degree"
-                    fill="outline"></ion-input>
+                  <ion-input v-model="degree" ref="input" type="number" placeholder="mark degree" fill="outline"></ion-input>
                   <br />
                   <ion-label>mark pg</ion-label>
                   <ion-input v-model="pg" ref="input" type="number" placeholder="mark pg" fill="outline"></ion-input>
                   <br />
                   <ion-label>mark ielts</ion-label>
-                  <ion-input v-model="ielts" ref="input" type="number" placeholder="mark ielts"
-                    fill="outline"></ion-input>
+                  <ion-input v-model="ielts" ref="input" type="number" placeholder="mark ielts" fill="outline"></ion-input>
                   <br />
                   <ion-label>experience year</ion-label>
-                  <ion-input v-model="year" ref="input" type="number" placeholder="experience year"
-                    fill="outline"></ion-input>
+                  <ion-input v-model="year" ref="input" type="number" placeholder="experience year" fill="outline"></ion-input>
                   <br />
                   <ion-label>experience field</ion-label>
-                  <ion-input v-model="field" ref="input" type="text" placeholder="experience feild"
-                    fill="outline"></ion-input>
+                  <ion-input v-model="field" ref="input" type="text" placeholder="experience feild" fill="outline"></ion-input>
                   <br />
                   <ion-label>Lead created</ion-label>
                   <ion-input :value="userId" readonly></ion-input>
@@ -207,11 +201,9 @@
                         <div v-for="(image, index) in panimages" :key="index" class="preview-wrapper">
                           <img :src="image.url || image" alt="Pan Image" class="preview-image">
                         </div>
-                
                       </div>
                     </div>
                   </div>
-          
                 </div>
               </ion-content>
             </ion-modal>
@@ -230,10 +222,7 @@ import {
   IonButtons, IonMenuButton, IonButton, IonIcon,
   IonSplitPane, IonGrid, IonRow, IonCol, IonSearchbar,
   IonCard, IonCardContent, IonPage, IonModal, IonInput,
-  IonItem,
-  IonSelect,
-  IonSelectOption,
-  IonLabel,
+  IonItem, IonSelect, IonSelectOption, IonLabel,
 } from '@ionic/vue';
 import {
   peopleOutline, personAddOutline, closeCircleOutline,
@@ -252,8 +241,10 @@ export default defineComponent({
     IonCard, IonCardContent, SideMenu, IonPage, IonModal, IonInput,
     IonItem, IonSelect, IonSelectOption, IonLabel
   },
+
   data() {
     return {
+      searchQuery: '', // For search functionality
       showUpdate: false,
       name: '',
       mobile: '',
@@ -267,16 +258,15 @@ export default defineComponent({
       ielts: '',
       year: '',
       field: '',
-      // priorityId: null,
       pan_no: '',
       aadhar_no: '',
       pass_no: '',
       followupCouns: '',
       followupDoc: '',
       followupApp: '',
-      passimages: [], // Array of {file, url} objects
-      aadharimages: [], // Array of {file, url} objects
-      panimages: [], // Array of {file, url} objects
+      passimages: [],
+      aadharimages: [],
+      panimages: [],
       imageFile: null,
       imageFile1: null,
       imageFile2: null,
@@ -295,40 +285,75 @@ export default defineComponent({
       counsillerId: null,
       userId: null,
       currentleadId: null,
-      peopleOutline, personAddOutline, closeCircleOutline,
-      refreshCircleOutline, callOutline, locationOutline,
-      timeOutline, globeOutline, createOutline, eyeOutline,
-      trash, chevronBackOutline
+      peopleOutline,
+      personAddOutline,
+      closeCircleOutline,
+      refreshCircleOutline,
+      callOutline,
+      locationOutline,
+      timeOutline,
+      globeOutline,
+      createOutline,
+      eyeOutline,
+      trash,
+      chevronBackOutline
+    };
+  },
+
+  computed: {
+    ...mapState('addLead', ['totalLeadList', 'totalAllLeadCount']),
+    ...mapState('counsiller', ['totaluploadListId']),
+
+    // Filtered leads based on search query
+    filteredLeads() {
+      if (!this.searchQuery) return this.totalLeadList;
+      
+      const query = this.searchQuery.toLowerCase().trim();
+      return this.totalLeadList.filter(lead => {
+        return (
+          (lead.student_name && lead.student_name.toLowerCase().includes(query)) ||
+          (lead.mobile && lead.mobile.toString().includes(query)) ||
+          (lead.location && lead.location.toLowerCase().includes(query)) ||
+          (lead.country && lead.country.toLowerCase().includes(query)) ||
+          (lead.lead_source && lead.lead_source.toLowerCase().includes(query))
+        );
+      });
     }
   },
-  computed: {
-    ...mapState('addLead', ['totalLeadList', 'totalAllLeadCount',]),
-    ...mapState('counsiller', ['totaluploadListId']),
-  },
+
   methods: {
-    ...mapActions('addLead', ['fetchtotalleadlist', 'fetchtotalAllleadCount',]),
+    ...mapActions('addLead', ['fetchtotalleadlist', 'fetchtotalAllleadCount']),
     ...mapActions('counsiller', ['FETCH_DOCUMENTS']),
+
+    // Search handler
+    handleSearch(event) {
+      this.searchQuery = event.target.value;
+    },
+
+    // Modal handlers
     closeModalAndRefresh() {
-      // Close the modal
       this.showUpdate = false;
       window.location.reload();
     },
+
+    // Data fetching
     async fetchleadData() {
       const userId = this.$route.params.id;
       try {
         await this.fetchtotalleadlist();
         await this.fetchtotalAllleadCount();
-        // console.log("Leads fetched successfully:", this.totalLeadListId);
       } catch (error) {
         console.error('Error fetching lead data:', error);
       }
     },
+
     async openUpdateModal(leadId) {
       console.log('Opening modal for lead ID:', leadId);
       try {
         const leadData = await this.totalLeadList.find((lead) => lead.id === leadId);
 
         if (leadData) {
+          // Populate form fields
           this.name = leadData.student_name || '';
           this.mobile = leadData.mobile || '';
           this.date = leadData.date ? new Date(leadData.date).toISOString().split('T')[0] : '';
@@ -342,19 +367,27 @@ export default defineComponent({
           this.ielts = leadData.mark_ielts || '';
           this.year = leadData.experience_year || '';
           this.field = leadData.experience_field || '';
+          
+          // Populate user and assignment fields
           this.userId = leadData.user?.username || '';
           this.counsillerAId = leadData.counsill?.username || '';
           this.documentAId = leadData.documentation?.username || '';
           this.applicationAId = leadData.applicat?.username || '';
+          
+          // Populate dates
           this.followupCouns = leadData.followup_date ? new Date(leadData.followup_date).toISOString().split('T')[0] : '';
           this.followupDoc = leadData.followup_documentdate ? new Date(leadData.followup_documentdate).toISOString().split('T')[0] : '';
           this.followupApp = leadData.followup_applicationdate ? new Date(leadData.followup_applicationdate).toISOString().split('T')[0] : '';
+          
+          // Populate status fields
           this.counsillerId = leadData.counsiller?.status_name || '';
           this.applicationId = leadData.application?.status_name || '';
-          // this.priorityId = leadData.priorityId || '';
           this.documentId = leadData.document?.status_name || '';
           this.studentStatusId = leadData.student_status?.status_name || '';
+          
           this.currentleadId = leadId;
+          
+          // Fetch and populate documents
           await this.fetchDocuments(leadId);
           this.showUpdate = true;
         } else {
@@ -364,6 +397,7 @@ export default defineComponent({
         console.error('Error fetching data:', error);
       }
     },
+
     async fetchDocuments(leadId) {
       try {
         const response = await this.FETCH_DOCUMENTS(leadId);
@@ -371,213 +405,224 @@ export default defineComponent({
 
         if (response && response.data && response.data.length > 0) {
           const document = response.data[0];
+          
+          // Set document ID and numbers
           this.currentDocumentId = document.id || null;
           this.pass_no = document.passport_no || '';
           this.aadhar_no = document.aadhar_no || '';
           this.pan_no = document.pan_no || '';
 
-          // Handling images
+          // Handle document images
           this.existingPassportUrl = document.passport_image || '';
           this.existingAadharUrl = document.aadhar_image || '';
           this.existingPanUrl = document.pan_image || '';
 
-          // Populate image arrays
+          // Process image arrays
           this.passimages = this.existingPassportUrl
-            ? this.existingPassportUrl.split(',').map((url) => ({ url: url.trim() }))
+            ? this.existingPassportUrl.split(',').map(url => ({ url: url.trim() }))
             : [];
           this.aadharimages = this.existingAadharUrl
-            ? this.existingAadharUrl.split(',').map((url) => ({ url: url.trim() }))
+            ? this.existingAadharUrl.split(',').map(url => ({ url: url.trim() }))
             : [];
           this.panimages = this.existingPanUrl
-            ? this.existingPanUrl.split(',').map((url) => ({ url: url.trim() }))
+            ? this.existingPanUrl.split(',').map(url => ({ url: url.trim() }))
             : [];
 
-          this.documentsLoaded = true; // Indicate documents were successfully loaded
+          this.documentsLoaded = true;
         }
       } catch (error) {
         console.error('Error fetching documents:', error);
-        this.errorMessage = 'Failed to load existing documents.';
-
       }
-    },
+    }
   },
 
   async mounted() {
     try {
-      this.fetchleadData();
+      await this.fetchleadData();
     } catch (error) {
-      console.error('Error fetching data:', error);
+      console.error('Error in mounted hook:', error);
     }
   }
 });
 </script>
 
-<style scoped>
+<style>
+  /* Modern color palette and variables */
+  :root {
+    --primary-color: #4f46e5;
+    --primary-light: #818cf8;
+    --secondary-color: #3f3f46;
+    --background-light: #f3f4f6;
+    --card-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+    --transition: all 0.3s ease;
+  }
 
-.full-screen-modal {
-  --height: 100%;
-  --width: 100%;
-  --border-radius: 0;
-  --box-shadow: none;
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-}
+  /* Global styles */
+  ion-content {
+    --background: var(--background-light);
+  }
 
-.full-screen-modal .modal-wrapper {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  border-radius: 0;
-}
+  /* Stats Grid styling */
+  .stats-grid {
+    padding: 1rem;
+    margin-bottom: 1rem;
+  }
 
-.preview-image {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  border-radius: 4px;
-}
+  .stats-card {
+    background: linear-gradient(135deg, var(--primary-color), var(--primary-light));
+    border-radius: 1rem;
+    padding: 1.5rem;
+    color: white;
+    transition: var(--transition);
+    box-shadow: var(--card-shadow);
+  }
 
-.image-label {
-  font-size: 20px;
-  font-weight: bold;
-  margin-bottom: 8px;
-  display: block;
-}
+  .stats-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 12px -1px rgba(0, 0, 0, 0.15);
+  }
 
-.modal2 {
-  --height: 100%;
-}
+  .stats-icon {
+    font-size: 2rem;
+    margin-bottom: 0.5rem;
+  }
 
-.modal {
-  --height: 100%;
-  --border-radius: 16px;
-  --box-shadow: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
-  /* display: flex;
-    align-items: center; */
-}
+  .stats-content h4 {
+    margin: 0;
+    font-size: 1rem;
+    opacity: 0.9;
+  }
 
-.custom-searchbar {
-  max-width: 300px;
-  padding: 0 10px;
-}
+  .stats-value {
+    font-size: 2rem;
+    font-weight: bold;
+  }
 
-.stats-grid {
-  padding: 16px;
-  background-color: white;
-}
+  /* Leads List styling */
+  .leads-list ion-card {
+    margin: 1rem;
+    border-radius: 1rem;
+    box-shadow: var(--card-shadow);
+    transition: var(--transition);
+    background: white;
+  }
 
-.stats-card {
-  display: flex;
-  align-items: center;
-  padding: 15px;
-  background: #fff;
-  border-radius: 8px;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-}
+  .leads-list ion-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 12px -1px rgba(0, 0, 0, 0.15);
+  }
 
-.stats-icon.dark {
-  background: #000;
-  border-radius: 50%;
-  width: 40px;
-  height: 40px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  margin-right: 15px;
-}
+  .lead-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+  }
 
-.stats-icon.dark ion-icon {
-  font-size: 20px;
-  color: #fff;
-}
-
-.stats-content  {
-  margin: 0;
-  font-size: 14px;
-  color: #666;
-  width: 100%;
-}
-
-.stats-value {
-  display: block;
-  font-size: 24px;
-  font-weight: bold;
-  color: #000;
-}
-
-.stats-label {
-  font-size: 12px;
-  color: #666;
-}
-
-.leads-list {
-  padding: 16px;
-}
-
-.leads-list ion-card {
-  margin: 16px 0;
-}
-
-.lead-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: flex-start;
-}
-
-.lead-info h3 {
-  margin: 0;
-  display: flex;
-  align-items: center;
-  gap: 8px;
-}
-
-.status-badge {
-  padding: 2px 8px;
-  border-radius: 12px;
-  font-size: 12px;
-  color: white;
-}
-
-.status-badge.cancelled {
-  background: #dc2626;
-}
-
-.info-row {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 16px;
-  margin-top: 8px;
-  color: #666;
-}
-
-.info-row span {
-  display: flex;
-  align-items: center;
-  gap: 4px;
-}
-
-.source-row {
-  margin-top: 8px;
-  color: #666;
-}
-
-.action-buttons ion-button {
-  --color: #666;
-}
-
-@media (max-width: 768px) {
-  .custom-searchbar {
-    max-width: 100%;
+  .lead-info h3 {
+    color: var(--primary-color);
+    font-size: 1.25rem;
+    margin: 0 0 0.5rem 0;
   }
 
   .info-row {
-    flex-direction: column;
-    gap: 8px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem;
+    margin-bottom: 0.75rem;
   }
-}
+
+  .info-row span {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    color: var(--secondary-color);
+    font-size: 0.9rem;
+  }
+
+  .info-row ion-icon {
+    color: var(--primary-color);
+    font-size: 1.1rem;
+  }
+
+  .source-row {
+    color: var(--secondary-color);
+    font-size: 0.9rem;
+    opacity: 0.9;
+  }
+
+  .action-buttons {
+    display: flex;
+    gap: 0.5rem;
+  }
+
+  .action-buttons ion-button {
+    --color: var(--primary-color);
+  }
+
+  /* Modal styling */
+  .modal ion-content {
+    --background: white;
+  }
+
+  .form {
+    padding: 1rem;
+  }
+
+  .form ion-label {
+    color: var(--secondary-color);
+    font-weight: 500;
+    margin-bottom: 0.5rem;
+  }
+
+  .form ion-input {
+    margin-bottom: 1rem;
+    --background: var(--background-light);
+    --padding-start: 1rem;
+    --padding-end: 1rem;
+    --border-radius: 0.5rem;
+  }
+
+  /* Document section styling */
+  .experience-section {
+    padding: 1rem;
+    background: var(--background-light);
+    border-radius: 1rem;
+    margin: 1rem;
+  }
+
+  .section-title {
+    color: var(--primary-color);
+    margin-bottom: 1.5rem;
+  }
+
+  .preview-container {
+    display: flex;
+    gap: 1rem;
+    flex-wrap: wrap;
+    margin-top: 1rem;
+  }
+
+  .preview-wrapper {
+    width: 150px;
+    height: 150px;
+    border-radius: 0.5rem;
+    overflow: hidden;
+    box-shadow: var(--card-shadow);
+  }
+
+  .preview-image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  /* Custom searchbar styling */
+  .custom-searchbar {
+    --background: white;
+    --border-radius: 2rem;
+    --box-shadow: none;
+    --placeholder-color: var(--secondary-color);
+    max-width: 300px;
+  }
 </style>
+

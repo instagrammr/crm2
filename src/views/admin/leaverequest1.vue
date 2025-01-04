@@ -88,7 +88,11 @@
                     <br>&nbsp; &nbsp; 
                     <ion-input v-model="reason" type="text" class="form-input"></ion-input>
                   </ion-item>
-
+                  <ion-item>
+                    <ion-label position="floating">date</ion-label>
+                    <br>&nbsp; &nbsp; 
+                    <ion-input v-model="date" type="text" class="form-input"></ion-input>
+                  </ion-item>
                   <ion-item>
                     <ion-label position="floating">Current Status</ion-label>
                     <br>&nbsp; &nbsp; 
@@ -175,6 +179,7 @@ export default defineComponent({
     return {
       name: '',
       reason: '',
+      date: '',
       addOutline,
       chevronBackOutline,
       trash,

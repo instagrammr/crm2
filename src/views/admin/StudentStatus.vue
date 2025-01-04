@@ -15,24 +15,20 @@
                 <ion-searchbar
                   placeholder="Search here"
                   class="custom-searchbar"
+                  v-model="searchQuery"
+                  @ionInput="handleSearch"
                 ></ion-searchbar>
               </ion-buttons>
             </ion-toolbar>
           </ion-header>
   
           <ion-content>
-  
-            <!-- Leads List -->
-            <div class="leads-list"   v-if="filteredLeads.length">
+            <div class="leads-list" v-if="filteredLeads.length">
               <ion-card v-for="lead in filteredLeads" :key="lead.id">
                 <ion-card-content>
                   <div class="lead-header">
                     <div class="lead-info">
-                      <h3>{{ lead.student_name }} 
-                        <!-- <span class="status-badge" :class="lead.lead_status.status_name.toLowerCase()">
-                          {{ lead.lead_status.status_name }}
-                        </span> -->
-                      </h3>
+                      <h3>{{ lead.student_name }}</h3>
                       <div class="info-row">
                         <span><ion-icon :icon="callOutline"></ion-icon>{{ lead.mobile }}</span>
                         <span><ion-icon :icon="locationOutline"></ion-icon>{{ lead.location }}</span>
@@ -41,32 +37,102 @@
                       </div>
                       <div class="source-row">
                         <span>Lead Source: {{ lead.lead_source }}</span>
-                        <span> status: {{ lead.student_status && lead.student_status.status_name ? lead.student_status.status_name : 'N/A' }}</span>
-
+                        <span>Status: {{ lead.student_status?.status_name || 'N/A' }}</span>
                       </div>
                     </div>
-                    <!-- <div class="action-buttons">
-                      <ion-button fill="clear" size="small" @click="openUpdateModal(lead.id)">
-                        <ion-icon slot="icon-only" :icon="createOutline"></ion-icon>
-                      </ion-button>
-                      <ion-button fill="clear" size="small">
+                    <div class="action-buttons">
+                      <ion-button fill="clear" size="small" @click="openDetailsModal(lead)">
                         <ion-icon slot="icon-only" :icon="eyeOutline"></ion-icon>
                       </ion-button>
-                      <ion-button fill="clear" size="small" @click="handledelete(lead)">
-                        <ion-icon slot="icon-only" :icon="trash"></ion-icon>
-                      </ion-button>
-                    </div> -->
+                    </div>
                   </div>
                 </ion-card-content>
               </ion-card>
             </div>
+            <div v-else-if="searchQuery" class="no-results">
+              <p>No students found matching your search.</p>
+            </div>
+
+            <!-- Details Modal -->
+            <ion-modal :is-open="showDetailsModal" @didDismiss="closeDetailsModal" class="details-modal">
+              <ion-header>
+                <ion-toolbar>
+                  <ion-buttons slot="start">
+                    <ion-button @click="closeDetailsModal">
+                      <ion-icon :icon="closeCircleOutline"></ion-icon>
+                    </ion-button>
+                  </ion-buttons>
+                  <ion-title>Student Details</ion-title>
+                </ion-toolbar>
+              </ion-header>
+
+              <ion-content class="ion-padding" v-if="selectedLead">
+                <ion-card>
+                  <ion-card-content>
+                    <h2 class="detail-title">Personal Information</h2>
+                    <ion-list>
+                      <ion-item>
+                        <ion-label>Name: {{ selectedLead.student_name }}</ion-label>
+                      </ion-item>
+                      <ion-item>
+                        <ion-label>Mobile: {{ selectedLead.mobile }}</ion-label>
+                      </ion-item>
+                      <ion-item>
+                        <ion-label>Location: {{ selectedLead.location }}</ion-label>
+                      </ion-item>
+                      <ion-item>
+                        <ion-label>Country: {{ selectedLead.country }}</ion-label>
+                      </ion-item>
+                      <ion-item>
+                        <ion-label>Lead Source: {{ selectedLead.lead_source }}</ion-label>
+                      </ion-item>
+                    </ion-list>
+
+                    <h2 class="detail-title">Academic Information</h2>
+                    <ion-list>
+                      <ion-item>
+                        <ion-label>10th Mark: {{ selectedLead.mark_tenth || 'N/A' }}</ion-label>
+                      </ion-item>
+                      <ion-item>
+                        <ion-label>12th Mark: {{ selectedLead.mark_twelth || 'N/A' }}</ion-label>
+                      </ion-item>
+                      <ion-item>
+                        <ion-label>Degree Mark: {{ selectedLead.mark_degree || 'N/A' }}</ion-label>
+                      </ion-item>
+                      <ion-item>
+                        <ion-label>PG Mark: {{ selectedLead.mark_pg || 'N/A' }}</ion-label>
+                      </ion-item>
+                      <ion-item>
+                        <ion-label>IELTS Score: {{ selectedLead.mark_ielts || 'N/A' }}</ion-label>
+                      </ion-item>
+                    </ion-list>
+
+                    <h2 class="detail-title">Status Information</h2>
+                    <ion-list>
+                      <ion-item>
+                        <ion-label>Current Status: {{ selectedLead.student_status?.status_name || 'N/A' }}</ion-label>
+                      </ion-item>
+                      <ion-item>
+                        <ion-label>Counsellor: {{ selectedLead.counsill?.username || 'N/A' }}</ion-label>
+                      </ion-item>
+                      <ion-item>
+                        <ion-label>Document Status: {{ selectedLead.document?.status_name || 'N/A' }}</ion-label>
+                      </ion-item>
+                      <ion-item>
+                        <ion-label>Application Status: {{ selectedLead.application?.status_name || 'N/A' }}</ion-label>
+                      </ion-item>
+                    </ion-list>
+                  </ion-card-content>
+                </ion-card>
+              </ion-content>
+            </ion-modal>
           </ion-content>
         </div>
       </ion-split-pane>
     </ion-app>
   </ion-page>
 </template>
-  
+
 <script>
 import { defineComponent, ref } from 'vue';
 import { mapActions, mapState } from 'vuex';
@@ -75,10 +141,7 @@ import {
   IonButtons, IonMenuButton, IonButton, IonIcon, 
   IonSplitPane, IonGrid, IonRow, IonCol, IonSearchbar,
   IonCard, IonCardContent, IonPage, IonModal, IonInput,
-  IonItem,
-  IonSelect,
-  IonSelectOption,
-  IonLabel, 
+  IonItem, IonSelect, IonSelectOption, IonLabel, IonList
 } from '@ionic/vue';
 import { 
   peopleOutline, personAddOutline, closeCircleOutline, 
@@ -89,73 +152,152 @@ import {
 import SideMenu from '../../components/SideMenu.vue';
 
 export default defineComponent({
-  name: 'TotalLeads',
+  name: 'StudentStatus',
   components: {
     IonApp, IonContent, IonHeader, IonToolbar, IonTitle, 
     IonButtons, IonMenuButton, IonButton, IonIcon, 
     IonSplitPane, IonGrid, IonRow, IonCol, IonSearchbar,
-    IonCard, IonCardContent, SideMenu, IonPage, IonModal, IonInput,
-    IonItem, IonSelect, IonSelectOption, IonLabel
+    IonCard, IonCardContent, SideMenu, IonPage, IonModal, 
+    IonInput, IonItem, IonSelect, IonSelectOption, IonLabel,
+    IonList
   },
+  
   data() {
     return {
-      showUpdate: false,
-      name: '',
-      mobile: '',
-      address: '',
-      country: '',
-      source: '',
-      tenth: '',
-      twelth: '',
-      deleteItem: {},
-      degree: '',
-      pg: '',
-      ielts: '',
-      year: '',
-      field: '',
-      showDelete:false,
-      counsillerId: null,
-      document: null,
-      currentleadId: null, 
-      peopleOutline, personAddOutline, closeCircleOutline, 
-      refreshCircleOutline, callOutline, locationOutline,
-      timeOutline, globeOutline, createOutline, eyeOutline,
-      trash, chevronBackOutline
+      searchQuery: '',
+      showDetailsModal: false,
+      selectedLead: null,
+      peopleOutline,
+      personAddOutline,
+      closeCircleOutline, 
+      refreshCircleOutline,
+      callOutline,
+      locationOutline,
+      timeOutline,
+      globeOutline,
+      createOutline,
+      eyeOutline,
+      trash,
+      chevronBackOutline
     }
   },
+  
   computed: {
-    ...mapState('addLead', ['totalLeadList',]),
+    ...mapState('addLead', ['totalLeadList']),
+    
     filteredLeads() {
-      return this.totalLeadList.filter(lead => lead.studentStatusId);
+      let leads = this.totalLeadList.filter(lead => lead.studentStatusId);
+      
+      if (this.searchQuery) {
+        const query = this.searchQuery.toLowerCase().trim();
+        leads = leads.filter(lead => {
+          return (
+            (lead.student_name && lead.student_name.toLowerCase().includes(query)) ||
+            (lead.mobile && lead.mobile.toString().includes(query)) ||
+            (lead.location && lead.location.toLowerCase().includes(query)) ||
+            (lead.country && lead.country.toLowerCase().includes(query)) ||
+            (lead.lead_source && lead.lead_source.toLowerCase().includes(query)) ||
+            (lead.student_status?.status_name && lead.student_status.status_name.toLowerCase().includes(query))
+          );
+        });
+      }
+      
+      return leads;
+    }
+  },
+  
+  methods: {
+    ...mapActions('addLead', ['fetchtotalleadlist']),
+    
+    handleSearch(event) {
+      this.searchQuery = event.target.value;
     },
     
-     },
-  methods: {
-    ...mapActions('addLead', ['fetchtotalleadlist',]),
+    openDetailsModal(lead) {
+      this.selectedLead = lead;
+      this.showDetailsModal = true;
+    },
+    
+    closeDetailsModal() {
+      this.showDetailsModal = false;
+      this.selectedLead = null;
+    },
+    
     async fetchleadData() {
       try {
         await this.fetchtotalleadlist();
-        // console.log("Leads fetched successfully:", this.totalLeadListId);
       } catch (error) {
         console.error('Error fetching lead data:', error);
       }
-    },
-    
-  },
-  // watch: {
-  // totalcounsillerList(newVal) {
-  //   console.log('Updated Counselor List:', newVal);
-  // }
-  // },
-    async mounted() {
-      try {
-        this.fetchleadData();
-      } catch (error) {
-        console.error('Error fetching data:', error);
-      }
     }
+  },
+  
+  mounted() {
+    this.fetchleadData();
+  }
 });
 </script>
+
+<style scoped>
+.lead-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+}
+
+.lead-info {
+  flex: 1;
+}
+
+.info-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+  margin: 0.5rem 0;
+}
+
+.source-row {
+  display: flex;
+  gap: 1rem;
+  margin-top: 0.5rem;
+}
+
+.info-row span, .source-row span {
+  display: flex;
+  align-items: center;
+  gap: 0.3rem;
+}
+
+.action-buttons {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.detail-title {
+  margin: 1.5rem 0 1rem;
+  color: var(--ion-color-primary);
+  font-weight: bold;
+}
+
+.no-results {
+  text-align: center;
+  padding: 2rem;
+  color: var(--ion-color-medium);
+}
+
+.details-modal {
+  --height: 90%;
+  --border-radius: 10px;
+}
+
+ion-card {
+  margin: 1rem;
+}
+
+.custom-searchbar {
+  max-width: 300px;
+}
+</style>
   
 <style scoped>
 .modal2{

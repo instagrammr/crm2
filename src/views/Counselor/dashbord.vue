@@ -23,20 +23,20 @@
               <ion-row>
                 <!-- Summary Stats Cards -->
                 <ion-col size="12" size-md="4">
-                  <div class="stats-card primary-gradient">
-                    <div class="stats-icon">
-                      <i class="fas fa-users"></i>
-                    </div>
-                    <div class="stats-content">
-                      <h4>Total Leads</h4>
-                      <span class="stats-value">{{ totalLeadCount }}</span>
-                      <div class="stats-trend">
-                        <i class="fas fa-arrow-up mr-1"></i>
-                        {{ calculateGrowth(totalLeadCount) }}%
-                      </div>
-                    </div>
-                  </div>
-                </ion-col>
+    <div class="stats-card primary-gradient" @click="navigateToLeads">
+      <div class="stats-icon">
+        <ion-icon :icon="peopleOutline"></ion-icon>
+      </div>
+      <div class="stats-content">
+        <h4>Total Leads</h4>
+        <span class="stats-value">{{ totalLeadCount }}</span>
+        <div class="stats-trend">
+          <ion-icon :icon="arrowUpOutline" class="mr-1"></ion-icon>
+          {{ calculateGrowth(totalLeadCount) }}%
+        </div>
+      </div>
+    </div>
+  </ion-col>
 
                 <ion-col size="12" size-md="4">
                   <div class="stats-card success-gradient">
@@ -525,6 +525,7 @@ export default defineComponent({
       }
     }
   },
+  
   async mounted() {
     await this.fetchLeadData();
     this.notificationCount = this.totaltodayLeadCount;
@@ -539,6 +540,7 @@ export default defineComponent({
       },
       deep: true
     },
+    
     totaltodayLeadCount(newCount) {
       if (newCount > 0) {
         this.notificationCount = newCount; // Update local count
