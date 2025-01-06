@@ -20,13 +20,15 @@
           </ion-header>
 
           <ion-content class="dashboard-content">
-            <div class="dashboard-header">
-              <h1>Welcome Back!</h1>
-              <p>{{ new Date().toLocaleDateString('en-US', {
-                weekday: 'long', year: 'numeric', month: 'long', day:
-                  'numeric'
-              }) }}</p>
-            </div>
+            <ion-card class="welcome-card">
+            <ion-card-header>
+              <ion-card-subtitle>{{ currentDate }}</ion-card-subtitle>
+              <ion-card-title>Welcome Back! </ion-card-title>
+            </ion-card-header>
+            <ion-card-content>
+              Your daily overview and statistics
+            </ion-card-content>
+          </ion-card>
 
             <div class="dashboard-grid">
               <ion-card class="metric-card total-staff">
@@ -474,9 +476,9 @@
             </div>
 
             <!-- Dropdown Section -->
-            <ion-col size="12" size-md="4">
+            <ion-col size="6" size-md="6">
               <ion-item>
-                <ion-label>Select an Option</ion-label>
+                <ion-label>Select staf</ion-label>
                 <ion-select placeholder="Choose One" @ionChange="handleDropdownChange" v-model="selectedOption">
                   <ion-select-option value="counsillerList">Counselor List</ion-select-option>
                   <ion-select-option value="documentList">Document List</ion-select-option>
@@ -593,7 +595,7 @@
 
             <!-- Update Modal -->
             <ion-modal :isOpen="showUpdate" @didDismiss="showUpdate = false" class="update-modal" full-screen
-              css-class="full-screen-modal">
+              css-class="">
               <ion-header>
                 <ion-toolbar class="modal-toolbar">
                   <ion-grid>
@@ -1337,6 +1339,7 @@ export default defineComponent({
       this.selectedLeadType = ''; // Reset the lead type
       this.leadsList = []; // Clear the leads list
     },
+    
     async fetchLeadType(type) {
       if (!this.leadsForUser || !this.currentModule) {
         console.error('No user or module selected.');
@@ -1529,6 +1532,7 @@ export default defineComponent({
       }
       // Add similar logic for aadhar and pan if needed
     },
+    
     async removeAllpanImages() {
 
       const isConfirmed = confirm('Are you sure you want to delete all pan images?');
@@ -1949,176 +1953,453 @@ export default defineComponent({
 </script>
 
 <style scoped>
-.detail-section {
-  margin-bottom: 1.5rem;
-}
-
-.section-title {
-  margin-bottom: 1rem;
-  color: var(--ion-color-primary);
-  font-size: 1.2rem;
-}
-
-.edit-icon {
-  font-size: 1.2rem;
-  color: var(--ion-color-primary);
-}
-
-ion-item {
-  --padding-start: 0;
-  --inner-padding-end: 0;
-  margin-bottom: 0.5rem;
-}
-
-ion-input,
-ion-textarea,
-ion-select,
-ion-datetime {
-  width: 100%;
-}
-
-.info-icon {
-  margin-left: 10px;
-}
-
-.info-grid {
-  margin-top: 5px;
-}
-
-.info-item {
-  margin-bottom: 10px;
-}
-
-.dropdown-result {
-  margin-top: 1rem;
-  font-weight: bold;
-}
-
-.dashboard-content {
-  --background: #f5f7fa;
-}
-
-.dashboard-header {
-  padding: 1.5rem;
-  background: #214d8f;
-  color: white;
-}
-
-.dashboard-header h1 {
-  margin: 0;
-  font-size: 1.8rem;
-  font-weight: 600;
-}
-
-.dashboard-header p {
-  margin: 0.5rem 0 0;
-  opacity: 0.9;
-}
-
+/* Dashboard Grid Layout */
 .dashboard-grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-  gap: 1.25rem;
-  padding: 1.25rem;
+  gap: 1.5rem;
+  padding: 1.5rem;
 }
 
+/* Card Base Styles */
 .metric-card {
-  margin: 0;
+  background: white;
+  border-radius: 16px;
   overflow: hidden;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   position: relative;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
 }
 
+.metric-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+}
+
+/* Card Content Layout */
 .metric-content {
-  display: flex;
-  padding: 1.25rem;
-  align-items: center;
+  padding: 1.5rem;
+  display: grid;
+  grid-template-columns: auto 1fr;
   gap: 1rem;
+  position: relative;
+  z-index: 1;
 }
 
+/* Icon Styling */
 .metric-icon {
-  display: flex;
-  align-items: center;
-  justify-content: center;
   width: 48px;
   height: 48px;
   border-radius: 12px;
-  font-size: 1.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 24px;
+  transition: all 0.3s ease;
 }
 
+.metric-card:hover .metric-icon {
+  transform: scale(1.1);
+}
+
+/* Card Type-Specific Colors */
+.total-staff .metric-icon {
+  background: linear-gradient(135deg, #6366f1, #4f46e5);
+  color: white;
+}
+
+.total-students .metric-icon {
+  background: linear-gradient(135deg, #f59e0b, #d97706);
+  color: white;
+}
+
+.counselor-leads .metric-icon {
+  background: linear-gradient(135deg, #10b981, #059669);
+  color: white;
+}
+
+.document-leads .metric-icon {
+  background: linear-gradient(135deg, #3b82f6, #2563eb);
+  color: white;
+}
+
+.visa-processing .metric-icon {
+  background: linear-gradient(135deg, #8b5cf6, #6d28d9);
+  color: white;
+}
+
+.visa-status .metric-icon {
+  background: linear-gradient(135deg, #ef4444, #dc2626);
+  color: white;
+}
+
+/* Metric Details */
 .metric-details {
-  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
 }
 
 .metric-details h3 {
   margin: 0;
-  font-size: 0.9rem;
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
-  color: var(--ion-color-medium);
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: #4b5563;
 }
 
 .metric-details p {
-  margin: 0.5rem 0;
-  font-size: 1.75rem;
+  margin: 0;
+  font-size: 1.5rem;
   font-weight: 700;
-  color: var(--ion-color-dark);
+  color: #111827;
 }
 
+/* Trend Indicators */
 .metric-trend {
   display: flex;
   align-items: center;
   gap: 0.5rem;
-  font-size: 0.85rem;
-}
-
-.metric-trend ion-icon {
-  font-size: 1rem;
+  font-size: 0.875rem;
+  font-weight: 500;
 }
 
 .metric-trend.positive {
-  color: var(--ion-color-success);
+  color: #059669;
 }
 
 .metric-trend.negative {
-  color: var(--ion-color-danger);
+  color: #dc2626;
 }
 
 .metric-trend.neutral {
-  color: var(--ion-color-warning);
+  color: #6b7280;
 }
 
 .metric-trend.warning {
-  color: var(--ion-color-warning);
+  color: #d97706;
 }
 
-/* Card-specific styles */
-.total-staff .metric-icon {
-  background: rgba(var(--ion-color-primary-rgb), 0.1);
-  color: var(--ion-color-primary);
+/* Ripple Effect */
+.ion-ripple-effect {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  pointer-events: none;
 }
 
-.total-students .metric-icon {
-  background: rgba(var(--ion-color-success-rgb), 0.1);
-  color: var(--ion-color-success);
+/* Card Loading Animation */
+@keyframes cardFadeIn {
+  0% {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
-.counselor-leads .metric-icon {
-  background: rgba(var(--ion-color-tertiary-rgb), 0.1);
-  color: var(--ion-color-tertiary);
+.metric-card {
+  animation: cardFadeIn 0.5s ease-out forwards;
 }
 
-.document-leads .metric-icon {
-  background: rgba(var(--ion-color-warning-rgb), 0.1);
-  color: var(--ion-color-warning);
+/* Staggered Animation Delay */
+.dashboard-grid .metric-card:nth-child(1) { animation-delay: 0.1s; }
+.dashboard-grid .metric-card:nth-child(2) { animation-delay: 0.2s; }
+.dashboard-grid .metric-card:nth-child(3) { animation-delay: 0.3s; }
+.dashboard-grid .metric-card:nth-child(4) { animation-delay: 0.4s; }
+.dashboard-grid .metric-card:nth-child(5) { animation-delay: 0.5s; }
+.dashboard-grid .metric-card:nth-child(6) { animation-delay: 0.6s; }
+
+/* Hover Glow Effect */
+.metric-card::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: radial-gradient(circle at center, rgba(255,255,255,0.8) 0%, rgba(255,255,255,0) 70%);
+  opacity: 0;
+  transition: opacity 0.3s ease;
 }
 
-.visa-processing .metric-icon {
-  background: rgba(var(--ion-color-secondary-rgb), 0.1);
-  color: var(--ion-color-secondary);
+.metric-card:hover::after {
+  opacity: 0.6;
 }
 
-.visa-status .metric-icon {
-  background: rgba(var(--ion-color-danger-rgb), 0.1);
-  color: var(--ion-color-danger);
+/* Number Counter Animation */
+@keyframes countUp {
+  from {
+    transform: translateY(10px);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
 }
+
+.metric-details p {
+  animation: countUp 0.5s ease-out forwards;
+}
+
+/* Responsive Adjustments */
+@media (max-width: 768px) {
+  .dashboard-grid {
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    gap: 1rem;
+    padding: 1rem;
+  }
+  
+  .metric-content {
+    padding: 1rem;
+  }
+  
+  .metric-icon {
+    width: 40px;
+    height: 40px;
+    font-size: 20px;
+  }
+  
+  .metric-details p {
+    font-size: 1.25rem;
+  }
+}
+
+/* Dark Mode Support */
+@media (prefers-color-scheme: dark) {
+  .metric-card {
+    background: #1f2937;
+  }
+  
+  .metric-details h3 {
+    color: #9ca3af;
+  }
+  
+  .metric-details p {
+    color: #f3f4f6;
+  }
+}
+.welcome-card {
+  background: linear-gradient(135deg, #4c8dff, #3171e0);
+  color: white;
+  margin-bottom: 1rem;
+}
+
+.welcome-card ion-card-subtitle,
+.welcome-card ion-card-title {
+  color: white;
+}
+
+.stat-card {
+  text-align: center;
+  --background: #f8f9fa;
+}
+
+.stat-icon {
+  font-size: 2rem;
+  color: #3171e0;
+  margin-bottom: 0.5rem;
+}
+
+.stat-card h2 {
+  font-size: 1.5rem;
+  font-weight: bold;
+  margin: 0.5rem 0;
+  color: #2d3748;
+}
+
+.stat-card p {
+  margin: 0;
+  color: #718096;
+}
+
+ion-item {
+  --padding-start: 1rem;
+  --inner-padding-end: 1rem;
+  margin-bottom: 0.5rem;
+  border-radius: 8px;
+}
+
+
+
+.main-container {
+  padding: 1rem;
+  background: #f8f9fa;
+  border-radius: 16px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+}
+
+.select-card {
+  margin-bottom: 1.5rem;
+  border-radius: 12px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+}
+
+.select-item {
+  --background: transparent;
+}
+
+.custom-select {
+  --placeholder-color: #6c757d;
+  --placeholder-opacity: 0.8;
+}
+
+.user-list-container {
+  margin: 1rem 0;
+  max-height: 300px;
+  overflow-y: auto;
+}
+
+.user-item-card {
+  margin-bottom: 0.75rem;
+  transition: transform 0.2s;
+}
+
+.user-item-card:hover {
+  transform: translateX(4px);
+}
+
+.user-list-item {
+  --background: white;
+  border-radius: 10px;
+  margin-bottom: 0.5rem;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+}
+
+.username {
+  font-weight: 600;
+  color: #2d3748;
+}
+
+.leads-container {
+  margin-top: 2rem;
+}
+
+.leads-title {
+  font-size: 1.5rem;
+  color: #2d3748;
+  margin-bottom: 1rem;
+  font-weight: 600;
+}
+
+.lead-type-options {
+  display: flex;
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+}
+
+.lead-type-options ion-button {
+  --border-radius: 20px;
+  --padding-start: 1.5rem;
+  --padding-end: 1.5rem;
+}
+
+.lead-type-options .active {
+  --background: var(--ion-color-primary-shade);
+}
+
+.lead-card {
+  margin-bottom: 1rem;
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+  transition: transform 0.2s;
+}
+
+.lead-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12);
+}
+
+.lead-item {
+  --padding-start: 1rem;
+  --padding-end: 1rem;
+  --inner-padding-end: 0;
+}
+
+.lead-name {
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: #2d3748;
+  margin-bottom: 0.5rem;
+}
+
+.status-badge {
+  display: inline-block;
+  padding: 0.25rem 0.75rem;
+  border-radius: 999px;
+  font-size: 0.875rem;
+  font-weight: 500;
+  margin: 0.5rem 0;
+}
+
+.status-badge.pending {
+  background: #fed7aa;
+  color: #9a3412;
+}
+
+.status-badge.active {
+  background: #bbf7d0;
+  color: #166534;
+}
+
+.info-grid {
+  margin-top: 0.5rem;
+}
+
+.info-item {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  color: #64748b;
+  font-size: 0.875rem;
+}
+
+.info-icon {
+  font-size: 1rem;
+  color: #94a3b8;
+}
+
+.action-buttons {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.action-btn {
+  --padding-start: 0.5rem;
+  --padding-end: 0.5rem;
+}
+
+.edit-icon {
+  color: #0ea5e9;
+  font-size: 1.25rem;
+}
+
+.view-icon {
+  color: #6366f1;
+  font-size: 1.25rem;
+}
+
+/* Custom Scrollbar */
+::-webkit-scrollbar {
+  width: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: #f1f1f1;
+  border-radius: 3px;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #cbd5e1;
+  border-radius: 3px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #94a3b8;
+}
+
 </style>

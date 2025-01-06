@@ -255,7 +255,7 @@ export default defineComponent({
 .logo-image {
   width: 150px;
   height: auto;
-  margin-left: 100px; /* Pushes the image to the right in a flex container */
+  margin-left: 110px; /* Pushes the image to the right in a flex container */
 }
 
 
