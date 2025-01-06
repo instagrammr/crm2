@@ -13,7 +13,7 @@ export default {
     totalDocumentStatusList: [],
     totalLeadListId: [],
     totalstudentListId: [],
-    totalcounsillerList: [],
+    totalCounsillerList: [],
     totalfollowupListId: [],
     totalregisteredListId: [],
     totaldropedListId: [],
@@ -61,7 +61,7 @@ export default {
       state.totaluploadListId = data;
     },
     SET_COUNSILLER_LIST(state, payload) {
-      state.totalcounsillerList = payload;
+      state.totalCounsillerList = payload;
     },
     SET_TOTALFOLLOWUP_LISTID(state, data) {
       state.totalfollowupListId = data;
@@ -531,7 +531,7 @@ export default {
       }
 
     },
-    async fetchtotalcounsillerlist(context) {
+    async fetchtotalCounsillerlist(context) {
       try {
         const auth = JSON.parse(localStorage.getItem('user'));
         // console.log(auth);

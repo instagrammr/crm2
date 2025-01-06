@@ -12,7 +12,7 @@ export default {
       totalconvertedLeadCount: 0,
       totalDocumentStatusList: [],
       totalLeadListId: [],
-      totaldocumentList: [],
+      totalDocumentList: [],
       totalstudentListId: [],
       totalfollowupListId: [],
       totalregisteredListId: [],
@@ -45,7 +45,7 @@ export default {
         state.totalLeadListId = data;
       },
       SET_DOCUMENT_LIST(state, payload) {
-        state.totaldocumentList = payload;
+        state.totalDocumentList = payload;
       },
       SET_TOTALFOLLOWUP_LISTID(state, data) {
         state.totalfollowupListId = data;
@@ -449,7 +449,7 @@ export default {
         }
         
       },
-      async fetchtotaldocumentlist(context) {
+      async fetchtotalDocumentlist(context) {
         try {
           const auth = JSON.parse(localStorage.getItem('user'));
           // console.log(auth);

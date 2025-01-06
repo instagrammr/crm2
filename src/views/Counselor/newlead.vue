@@ -180,7 +180,7 @@
                   </ion-select>
                   <ion-select v-model="newcounsillerId" label="Status" labelPlacement="floating" fill="solid"
                     class="form-select">
-                    <ion-select-option v-for="status in totalcounsillerList" :key="status.id" :value="status.id">
+                    <ion-select-option v-for="status in totalCounsillerList" :key="status.id" :value="status.id">
                       {{ status.status_name }}
                     </ion-select-option>
                   </ion-select>
@@ -274,7 +274,7 @@
                   </ion-select>
                   <ion-select v-model="counsillerId" label="Status" labelPlacement="floating" fill="solid"
                     class="form-select">
-                    <ion-select-option v-for="status in totalcounsillerList" :key="status.id" :value="status.id">
+                    <ion-select-option v-for="status in totalCounsillerList" :key="status.id" :value="status.id">
                       {{ status.status_name }}
                     </ion-select-option>
                   </ion-select>
@@ -636,7 +636,7 @@ export default defineComponent({
     };
   },
   computed: {
-    ...mapState('counsiller', ['totaltodayListId', 'totalcounsillerList', 'totaluploadListId', 'totalStatusList', 'totaltodayLeadCount', 
+    ...mapState('counsiller', ['totaltodayListId', 'totalCounsillerList', 'totaluploadListId', 'totalStatusList', 'totaltodayLeadCount', 
                               'totalremarkListId', 'totalDropedCount', 'totalFollowupCount', 'totalLeadCount']),
     ...mapState('user', ['totaldocumentList']),
     notificationCount() {
@@ -666,7 +666,7 @@ export default defineComponent({
     },
   },
   methods: {
-    ...mapActions('counsiller', ['fetchtotaltodaylistId', 'fetchtotalcounsillerlist', 'update_lead', 'delete_leads',
+    ...mapActions('counsiller', ['fetchtotaltodaylistId', 'fetchtotalCounsillerlist', 'update_lead', 'delete_leads',
       'ADD_UPLOAD', 'UPDATE_UPLOAD', 'FETCH_DOCUMENTS', 'delete_passport', 'delete_documents', 'fetchtotalleadCount', 'fetchtotalfollowupCount', 'fetchtotaldropedCount',
       'delete_aadhar', 'delete_pan', 'fetchtotalstatuslist', 'Add_lead', 'fetchtotaltodayLeadCount', 'Add_remark', 'fetchtotalremarkListId', 'update_remark', 'fetchtotalremarkListId']),
     ...mapActions('user', ['fetchtotaldocumentlist']),
@@ -985,7 +985,7 @@ export default defineComponent({
         await this.fetchtotalleadCount(userId);
         await this.fetchtotalfollowupCount(userId);
         await this.fetchtotaldropedCount(userId);
-        await this.fetchtotalcounsillerlist();
+        await this.fetchtotalCounsillerlist();
         await this.fetchtotaldocumentlist();
         await this.fetchtotalstatuslist();
         await this.fetchtotaltodayLeadCount(userId);

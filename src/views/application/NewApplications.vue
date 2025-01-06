@@ -188,7 +188,7 @@
                   <ion-row>
                     <ion-col>
                       <ion-select v-model="applicationId" placeholder="Select status">
-                        <ion-select-option v-for="status in totalapplicationList" :key="status.id" :value="status.id">
+                        <ion-select-option v-for="status in totalApplicationList" :key="status.id" :value="status.id">
                           {{ status.status_name }}
                         </ion-select-option>
                       </ion-select>
@@ -559,7 +559,7 @@ export default defineComponent({
     }
   },
   computed: {
-    ...mapState('application', ['totaltodayListId', 'totalstatusList', 'totalapplicationList', 'totaltodayLeadCount', 'totalremarkListId', 'totalLeadCount', 'totalFollowupCount', 'totalDropedCount']),
+    ...mapState('application', ['totaltodayListId', 'totalstatusList', 'totalApplicationList', 'totaltodayLeadCount', 'totalremarkListId', 'totalLeadCount', 'totalFollowupCount', 'totalDropedCount']),
     ...mapState('counsiller', ['totaluploadListId']),
     notificationCount() {
       // Replace this with the logic to fetch the actual notification count
@@ -571,7 +571,7 @@ export default defineComponent({
     },
   },
   methods: {
-    ...mapActions('application', ['fetchtotaltodaylistId', 'fetchtotalapplicationlist', 'fetchtotalstatuslist', 'update_lead', 'delete_leads', 'fetchtotalremarkListId', 'Add_remark', 'update_remark', 'delete_remark', 'fetchtotaltodayLeadCount', 'fetchtotalleadCount', 'fetchtotalfollowupCount', 'fetchtotaldropedCount',]),
+    ...mapActions('application', ['fetchtotaltodaylistId', 'fetchtotalApplicationlist', 'fetchtotalstatuslist', 'update_lead', 'delete_leads', 'fetchtotalremarkListId', 'Add_remark', 'update_remark', 'delete_remark', 'fetchtotaltodayLeadCount', 'fetchtotalleadCount', 'fetchtotalfollowupCount', 'fetchtotaldropedCount',]),
     ...mapActions('counsiller', ['FETCH_DOCUMENTS']),
     navigateToNoti() {
       this.$router.push({ name: 'NotificationApp' });
@@ -665,7 +665,7 @@ export default defineComponent({
         await this.fetchtotalleadCount(userId);
         await this.fetchtotalfollowupCount(userId);
         await this.fetchtotaldropedCount(userId);
-        await this.fetchtotalapplicationlist();
+        await this.fetchtotalApplicationlist();
         await this.fetchtotalstatuslist();
         await this.fetchtotalremarkListId();
         await this.fetchtotaltodayLeadCount(userId);

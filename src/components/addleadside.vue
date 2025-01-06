@@ -53,7 +53,7 @@ import { ref, computed } from 'vue';
 import axios from 'axios';
 import {
   gridOutline, peopleOutline, calendarOutline,
-  ellipsisVertical, logOutOutline
+  ellipsisVertical, logOutOutline, chatboxOutline
 } from 'ionicons/icons';
 
 export default {
@@ -78,6 +78,7 @@ export default {
       { title: 'Addlead', url: { name: 'addlead', params: { id: userId.value } }, icon: peopleOutline },
       { title: 'Attendance', url: { name: 'attendanceAdd', params: { id: userId.value } }, icon: peopleOutline },
       { title: 'Birthday', url: { name: 'BirthdayAdd' }, icon: calendarOutline },
+      { title: 'Messages', url: { name: 'messageAdd', params: { id: userId.value } }, icon: chatboxOutline },
       { title: 'leaverequest', url: { name: 'leaverequest4', params: { id: userId.value } }, icon: peopleOutline },
 
       // attendanceAdd
@@ -181,7 +182,8 @@ export default {
       handleLogout,
       logOutOutline,
       alertButtons,
-      ellipsisVertical
+      ellipsisVertical,
+      chatboxOutline
     };
   }
 };

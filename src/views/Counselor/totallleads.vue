@@ -237,7 +237,7 @@
 
                   <ion-select v-model="counsillerId" label="Status" labelPlacement="floating" fill="solid"
                     class="form-select">
-                    <ion-select-option v-for="status in totalcounsillerList" :key="status.id" :value="status.id">
+                    <ion-select-option v-for="status in totalCounsillerList" :key="status.id" :value="status.id">
                       {{ status.status_name }}
                     </ion-select-option>
                   </ion-select>
@@ -686,7 +686,7 @@ export default defineComponent({
   },
   computed: {
     ...mapState('counsiller', ['totalLeadListId', 'totalLeadCount', 'totalFollowupCount', 'totalRegisteredCount', 'totalDocumentStatusList',
-      'totalDropedCount', 'totalcounsillerList', 'totaluploadListId', 'totalStatusList', 'totalremarkListId', 'totaltodayLeadCount']),
+      'totalDropedCount', 'totalCounsillerList', 'totaluploadListId', 'totalStatusList', 'totalremarkListId', 'totaltodayLeadCount']),
     ...mapState('user', ['totaldocumentList']),
     notificationCount() {
       // Replace this with the logic to fetch the actual notification count
@@ -713,7 +713,7 @@ export default defineComponent({
   },
   methods: {
     ...mapActions('counsiller', ['fetchtotalLeadlistId', 'fetchtotalleadCount', 'fetchtotalfollowupCount', 'fetchtotaldropedCount',
-      'fetchtotalregisteredCount', 'fetchtotalcounsillerlist', 'update_lead', 'delete_leads', 'fetchtotalDocuumentstatuslist',
+      'fetchtotalregisteredCount', 'fetchtotalCounsillerlist', 'update_lead', 'delete_leads', 'fetchtotalDocuumentstatuslist',
       'ADD_UPLOAD', 'UPDATE_UPLOAD', 'FETCH_DOCUMENTS', 'delete_passport', 'delete_documents',
       'delete_aadhar', 'delete_pan', 'fetchtotalstatuslist', 'fetchtotalremarkListId', 'update_remark', 'Add_remark', 'delete_remark', 'fetchtotaltodayLeadCount']),
     ...mapActions('user', ['fetchtotaldocumentlist']),
@@ -1022,7 +1022,7 @@ export default defineComponent({
         await this.fetchtotalfollowupCount(userId);
         await this.fetchtotalregisteredCount(userId);
         await this.fetchtotaldropedCount(userId);
-        await this.fetchtotalcounsillerlist();
+        await this.fetchtotalCounsillerlist();
         await this.fetchtotaldocumentlist();
         await this.fetchtotalremarkListId();
         await this.fetchtotalstatuslist();

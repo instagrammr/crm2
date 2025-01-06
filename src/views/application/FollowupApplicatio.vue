@@ -100,7 +100,7 @@
                       </div>
                       <ion-select v-model="lead.applicationId" label="Status" labelPlacement="floating" fill="solid"
                         class="form-select" @ionChange="updateLeadStatus(lead)">
-                        <ion-select-option v-for="status in totalapplicationList" :key="status.id" :value="status.id">
+                        <ion-select-option v-for="status in totalApplicationList" :key="status.id" :value="status.id">
                           {{ status.status_name }}
                         </ion-select-option>
                       </ion-select>
@@ -427,7 +427,7 @@ export default defineComponent({
     };
   },
   computed: {
-    ...mapState('application', ['totalfollowupListId', 'totalFollowupCount', 'totalapplicationList', 'totaltodayLeadCount', 'totalremarkListId', 'totalLeadCount', 'totalDropedCount']),
+    ...mapState('application', ['totalfollowupListId', 'totalFollowupCount', 'totalApplicationList', 'totaltodayLeadCount', 'totalremarkListId', 'totalLeadCount', 'totalDropedCount']),
     ...mapState('counsiller', ['totaluploadListId']),
     notificationCount() {
       // Replace this with the logic to fetch the actual notification count
@@ -439,7 +439,7 @@ export default defineComponent({
     },
   },
   methods: {
-    ...mapActions('application', ['fetchtotalfollowuplistId', 'fetchtotalfollowupCount', 'fetchtotalapplicationlist', 'update_lead', 'fetchtotalremarkListId', 'Add_remark', 'update_remark', 'delete_remark', 'fetchtotaltodayLeadCount',
+    ...mapActions('application', ['fetchtotalfollowuplistId', 'fetchtotalfollowupCount', 'fetchtotalApplicationlist', 'update_lead', 'fetchtotalremarkListId', 'Add_remark', 'update_remark', 'delete_remark', 'fetchtotaltodayLeadCount',
       'fetchtotalleadCount', 'fetchtotaldropedCount',
     ]),
     ...mapActions('counsiller', ['FETCH_DOCUMENTS']),
@@ -658,7 +658,7 @@ export default defineComponent({
         await this.fetchtotalfollowupCount(userId);
         await this.fetchtotalleadCount(userId);
         await this.fetchtotaldropedCount(userId);
-        await this.fetchtotalapplicationlist();
+        await this.fetchtotalApplicationlist();
         await this.fetchtotalremarkListId();
         await this.fetchtotaltodayLeadCount(userId);
       } catch (error) {

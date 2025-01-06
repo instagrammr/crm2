@@ -86,7 +86,7 @@
                       </div>
                       <ion-select v-model="lead.documentId" label="Status" labelPlacement="floating" fill="solid"
                         class="form-select" @ionChange="updateLeadStatus(lead)">
-                        <ion-select-option v-for="status in totaldocumentList" :key="status.id" :value="status.id">
+                        <ion-select-option v-for="status in totalDocumentList" :key="status.id" :value="status.id">
                           {{ status.status_name }}
                         </ion-select-option>
                       </ion-select>
@@ -416,7 +416,7 @@ export default defineComponent({
     };
   },
   computed: {
-    ...mapState('document', ['totaldropedListId', 'totalDropedCount', 'totalFollowupCount', 'totalSubmitCount', 'totalLeadCount', 'totaldocumentList', 'totaltodayLeadCount', 'totalremarkListId',]),
+    ...mapState('document', ['totaldropedListId', 'totalDropedCount', 'totalFollowupCount', 'totalSubmitCount', 'totalLeadCount', 'totalDocumentList', 'totaltodayLeadCount', 'totalremarkListId',]),
     ...mapState('counsiller', ['totaluploadListId']),
     notificationCount() {
       // Replace this with the logic to fetch the actual notification count
@@ -429,7 +429,7 @@ export default defineComponent({
   },
   methods: {
     ...mapActions('document', ['fetchtotaldropedlistId', 'fetchtotaldropedCount', 'fetchtotalfollowupCount', 'fetchtotalleadCount',
-      'fetchtotaldocumentlist', 'update_lead', 'fetchtotalremarkListId', 'Add_remark', 'update_remark', 'delete_remark', 'fetchtotaltodayLeadCount',]),
+      'fetchtotalDocumentlist', 'update_lead', 'fetchtotalremarkListId', 'Add_remark', 'update_remark', 'delete_remark', 'fetchtotaltodayLeadCount',]),
     ...mapActions('counsiller', ['FETCH_DOCUMENTS']),
     navigateToNoti() {
       this.$router.push({ name: 'NotificationDoc' });
@@ -638,7 +638,7 @@ export default defineComponent({
         await this.fetchtotaldropedCount(userId);
         await this.fetchtotalfollowupCount(userId);
         await this.fetchtotalleadCount(userId);
-        await this.fetchtotaldocumentlist();
+        await this.fetchtotalDocumentlist();
         await this.fetchtotalremarkListId();
         await this.fetchtotaltodayLeadCount(userId);
         // console.log("Leads fetched successfully:", this.totalfollowupListId);

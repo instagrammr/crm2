@@ -11,7 +11,7 @@ export default {
       totaltodayLeadCount: 0,
       totalconvertedLeadCount: 0,
       totalLeadListId: [],
-      totalapplicationList: [],
+      totalApplicationList: [],
       totalstatusList: [],
       totalfollowupListId: [],
       totalregisterdListId: [],
@@ -43,7 +43,7 @@ export default {
         state.totalLeadListId = data;
       },
       SET_APPLICATION_LIST(state, payload) {
-        state.totalapplicationList = payload;
+        state.totalApplicationList = payload;
       },
       SET_STATUS_LIST(state, payload) {
         state.totalstatusList = payload;
@@ -453,7 +453,7 @@ export default {
         }
         
       },
-      async fetchtotalapplicationlist(context) {
+      async fetchtotalApplicationlist(context) {
         try {
           const auth = JSON.parse(localStorage.getItem('user'));
           // console.log(auth);

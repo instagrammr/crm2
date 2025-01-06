@@ -197,7 +197,7 @@
                   <ion-row>
                     <ion-col>
                       <ion-select v-model="documentId" placeholder="Select status">
-                        <ion-select-option v-for="status in totaldocumentList" :key="status.id" :value="status.id">
+                        <ion-select-option v-for="status in totalDocumentList" :key="status.id" :value="status.id">
                           {{ status.status_name }}
                         </ion-select-option>
                       </ion-select>
@@ -609,7 +609,7 @@ export default defineComponent({
   },
   computed: {
     ...mapState('document', ['totalLeadListId', 'totalLeadCount', 'totalFollowupCount', 'totalRegisteredCount', 'totalDocumentStatusList',
-      'totalDropedCount', 'totaldocumentList', 'totaltodayLeadCount', 'totalremarkListId']),
+      'totalDropedCount', 'totalDocumentList', 'totaltodayLeadCount', 'totalremarkListId']),
     ...mapState('counsiller', ['totaluploadListId']),
     ...mapState('user', ['totalapplicationList']),
     notificationCount() {
@@ -622,7 +622,7 @@ export default defineComponent({
     },
   },
   methods: {
-    ...mapActions('document', ['fetchtotalLeadlistId', 'fetchtotalleadCount', 'fetchtotalfollowupCount', 'fetchtotaldropedCount', 'fetchtotaldocumentlist', 'fetchtotalDocuumentstatuslist',
+    ...mapActions('document', ['fetchtotalLeadlistId', 'fetchtotalleadCount', 'fetchtotalfollowupCount', 'fetchtotaldropedCount', 'fetchtotalDocumentlist', 'fetchtotalDocuumentstatuslist',
       'update_lead', 'delete_leads', 'fetchtotalremarkListId', 'Add_remark', 'update_remark', 'delete_remark', 'fetchtotaltodayLeadCount', 'fetchtotalregisteredCount']),
     ...mapActions('counsiller', ['FETCH_DOCUMENTS']),
     ...mapActions('user', ['fetchtotalapplicationlist']),
@@ -830,7 +830,7 @@ export default defineComponent({
         await this.fetchtotalregisteredCount(userId);
         await this.fetchtotalfollowupCount(userId);
         await this.fetchtotaldropedCount(userId);
-        await this.fetchtotaldocumentlist();
+        await this.fetchtotalDocumentlist();
         await this.fetchtotalapplicationlist();
         await this.fetchtotalremarkListId();
         await this.fetchtotalDocuumentstatuslist();

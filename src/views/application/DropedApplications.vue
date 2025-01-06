@@ -90,7 +90,7 @@
                       </div>
                       <ion-select v-model="lead.applicationId" label="Status" labelPlacement="floating" fill="solid"
                         class="custom-select" @ionChange="updateLeadStatus(lead)">
-                        <ion-select-option v-for="status in totalapplicationList" :key="status.id" :value="status.id">
+                        <ion-select-option v-for="status in totalApplicationList" :key="status.id" :value="status.id">
                           {{ status.status_name }}
                         </ion-select-option>
                       </ion-select>
@@ -426,7 +426,7 @@ export default defineComponent({
       'totalFollowupCount',
       'totalRegisteredCount',
       'totalLeadCount',
-      'totalapplicationList',
+      'totalApplicationList',
       'totaltodayLeadCount', 'totalremarkListId'
 
     ]),
@@ -446,7 +446,7 @@ export default defineComponent({
       'fetchtotalregisteredCount',
       'fetchtotalfollowupCount',
       'fetchtotalleadCount',
-      'fetchtotalapplicationlist',
+      'fetchtotalApplicationlist',
       'update_lead', 'fetchtotalremarkListId', 'Add_remark', 'update_remark', 'delete_remark', 'fetchtotaltodayLeadCount',
     ]),
     ...mapActions('counsiller', ['FETCH_DOCUMENTS']),
@@ -677,7 +677,7 @@ export default defineComponent({
         await this.fetchtotalregisteredCount(userId);
         await this.fetchtotalfollowupCount(userId);
         await this.fetchtotalleadCount(userId);
-        await this.fetchtotalapplicationlist();
+        await this.fetchtotalApplicationlist();
         await this.fetchtotalremarkListId();
         await this.fetchtotaltodayLeadCount(userId);
       } catch (error) {

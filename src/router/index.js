@@ -4,9 +4,9 @@ import { createRouter, createWebHistory } from '@ionic/vue-router';
 
 
 // Import your views
- import HomePage from '../views/Home.vue';
- import AdminHome from '../views/admin/Adasbord.vue';
- import login from "../views/login.vue";
+import HomePage from '../views/Home.vue';
+import AdminHome from '../views/admin/Adasbord.vue';
+import login from "../views/login.vue";
 import employees from "../views/admin/employees.vue";
 import attendance from "../views/admin/attendance.vue";
 import registered from "../views/admin/registered-leads.vue";
@@ -19,13 +19,13 @@ import addemployees from "../views/admin/addemployees.vue";
 import addlead from "../views/addlead/addlead.vue";
 import attendanceAdd from "../views/addlead/attendanceAdd.vue";
 import viewlead from "../views/addlead/viewlead.vue";
-import leaddashbord from '../views/addlead/leadDashbord.vue'; 
+import leaddashbord from '../views/addlead/leadDashbord.vue';
 import leaverequest4 from "../views/addlead/leaverequest4.vue";
-  
-import cldashbord from '../views/Counselor/dashbord.vue'; 
-import clnewlead  from '../views/Counselor/newlead.vue';
-import leaverequest  from '../views/Counselor/leaverequest.vue';
-import leaverequest1  from '../views/admin/leaverequest1.vue';
+
+import cldashbord from '../views/Counselor/dashbord.vue';                                      
+import clnewlead from '../views/Counselor/newlead.vue';
+import leaverequest from '../views/Counselor/leaverequest.vue';
+import leaverequest1 from '../views/admin/leaverequest1.vue';
 import clfollowupleads from '../views/Counselor/followupleads.vue';
 import registerdleads from '../views/Counselor/registerdleads.vue';
 import totallleads from '../views/Counselor/totallleads.vue';
@@ -43,7 +43,7 @@ import ADashbord from '../views/application/Dashboard.vue';
 import DropedApplications from '../views/application/DropedApplications.vue';
 import FollowupApplicatio from '../views/application/FollowupApplicatio.vue';
 import NewApplications from '../views/application/NewApplications.vue';
-import registeredApplications  from '../views/application/registeredApplications.vue';
+import registeredApplications from '../views/application/registeredApplications.vue';
 import TotalApplications from '../views/application/TotalApplications.vue';
 import attendance1 from '../views/Documentation/attandence1.vue';
 import leaverequest2 from '../views/Documentation/leaverequest2.vue';
@@ -65,6 +65,11 @@ import leadStatus from '../views/admin/leadStatus.vue';
 import leadStatusCouns from '../views/Counselor/leadStatusCouns.vue';
 import leadStatusDoc from '../views/Documentation/leadStatusDoc.vue';
 import leadStatusApp from '../views/application/leadStatusApp.vue';
+import messageAdmin from '../views/admin/message.vue';
+import messageAdd from '../views/addlead/messageAdd.vue';
+import messageCouns from '../views/Counselor/messageCouns.vue';
+import messageDoc from '../views/Documentation/messageDoc.vue';
+import messageApp from '../views/application/messageApp.vue';
 
 
 
@@ -72,7 +77,7 @@ import leadStatusApp from '../views/application/leadStatusApp.vue';
 
 
 const routes = [
- 
+
 
   {
     path: '/',
@@ -154,6 +159,12 @@ const routes = [
     // beforeEnter: checkAuth
   },
   {
+    path: '/admin/message/:id',
+    name: 'messageAdmin',
+    component: messageAdmin,
+    // beforeEnter: checkAuth
+  },
+  {
     path: '/admin/addemployees',
     name: 'addemployees',
     component: addemployees,
@@ -170,7 +181,7 @@ const routes = [
     name: 'leaddashbord',
     component: leaddashbord,
     // beforeEnter: checkAuth
-  }, 
+  },
   {
     path: '/addlead/addlead/:id',
     name: 'addlead',
@@ -178,16 +189,21 @@ const routes = [
     // beforeEnter: checkAuth
   },
   {
-     path:'/addlead/attendanceAdd/:id',
-     name:'attendanceAdd',
-     component:attendanceAdd,
+    path: '/addlead/attendanceAdd/:id',
+    name: 'attendanceAdd',
+    component: attendanceAdd,
   },
   {
-    path:'/addlead/leaverequest4/:id',
-    name:'leaverequest4',
-    component:leaverequest4,
- },
-
+    path: '/addlead/leaverequest4/:id',
+    name: 'leaverequest4',
+    component: leaverequest4,
+  },
+  {
+    path: '/addlead/messageAdd/:id',
+    name: 'messageAdd',
+    component: messageAdd,
+    // beforeEnter: checkAuth
+  },
   {
     path: '/addlead/viewlead/:id',
     name: 'viewlead',
@@ -209,7 +225,7 @@ const routes = [
   {
     path: '/Counselor/Dashbord/:id',
     name: 'cldashbord',
-    component:cldashbord,
+    component: cldashbord,
     // beforeEnter: checkAuth
   },
   {
@@ -221,46 +237,46 @@ const routes = [
   {
     path: '/Counselor/newleads/:id',
     name: 'clnewlead',
-    component:clnewlead,
+    component: clnewlead,
     // beforeEnter: checkAuth
   },
   {
     path: '/Counselor/followupleads/:id',
     name: 'clfollowupleads',
-    component:clfollowupleads,
+    component: clfollowupleads,
     // beforeEnter: checkAuth
   },
 
   {
     path: '/Counselor/registerdleads/:id',
     name: 'registerdleads',
-    component:registerdleads,
+    component: registerdleads,
     // beforeEnter: checkAuth
   },
   {
     path: `/Counselor/totallleads/:id`,
     name: 'totallleads',
-    component:totallleads,
+    component: totallleads,
     // beforeEnter: checkAuth
   },
 
   {
     path: '/Counselor/leadsform',
     name: 'leadform',
-    component:leadform,
+    component: leadform,
     // beforeEnter: checkAuth
   },
 
   {
     path: '/Counselor/cancelled/:id',
     name: 'cancelled',
-    component:cancelled,
+    component: cancelled,
     // beforeEnter: checkAuth
   },
   {
     path: '/Counselor/leave-request/:id',
     name: 'leaverequest',
-    component:leaverequest,
+    component: leaverequest,
     // beforeEnter: checkAuth
   },
   {
@@ -270,9 +286,15 @@ const routes = [
     // beforeEnter: checkAuth
   },
   {
+    path: '/Counselor/messageCouns/:id',
+    name: 'messageCouns',
+    component: messageCouns,
+    // beforeEnter: checkAuth
+  },
+  {
     path: '/Counselor/studentStatusCouns/:id',
     name: 'studentStatusCouns',
-    component:studentStatusCouns,
+    component: studentStatusCouns,
     // beforeEnter: checkAuth
   },
   {
@@ -284,170 +306,182 @@ const routes = [
   {
     path: '/Counselor/attandence/:id',
     name: 'attandence',
-    component:attandence,
+    component: attandence,
     // beforeEnter: checkAuth
   }
 
-///Documentation
-,
-{
-  path: '/documentation/dashboard/:id',
-  name: 'Dashbord',
-  component:Dashbord,
-  // beforeEnter: checkAuth
-},
-{
-  path: '/documentation/NotificationDoc/:id',
-  name: 'NotificationDoc',
-  component: NotificationDoc,
-  // beforeEnter: checkAuth
-},
-{
-  path: '/documentation/new-documents/:id',
-  name: 'newdocuments',
-  component:newdocuments,
-  // beforeEnter: checkAuth
-},
-{
-  path: '/documentation/followup-documents/:id',
-  name: 'followupdoc',
-  component:followupdoc,
-  // beforeEnter: checkAuth
-},
-{
-  path: '/documentation/total-documents/:id',
-  name: 'TotalDocuments',
-  component:TotalDocuments,
-  // beforeEnter: checkAuth
-},
-{
-  path: '/documentation/dropped-documents/:id',
-  name: 'DropedDocuments',
-  component:DropedDocuments,
-  // beforeEnter: checkAuth
-}
-,
-{
-  path: '/documentation/registered-applications/:id',
-  name: 'registereddocument',
-  component:registereddocument,
-  // beforeEnter: checkAuth
-},
-{
-  path: '/documentation/attandence/:id',
-  name: 'attendance1',
-  component:attendance1,
-  // beforeEnter: checkAuth
-},
-{
-  path: '/documentation/leave-request2/:id',
-  name: 'leaverequest2',
-  component:leaverequest2,
-  // beforeEnter: checkAuth
-},
-{
-  path: '/documentation/BirthdayDoc/:id',
-  name: 'BirthdayDoc',
-  component: BirthdayDoc,
-  // beforeEnter: checkAuth
-},
-{
-  path: '/documentation/leadStatusDoc/:id',
-  name: 'leadStatusDoc',
-  component: leadStatusDoc,
-  // beforeEnter: checkAuth
-},
-{
-  path: '/documentation/studentStatusDoc/:id',
-  name: 'studentStatusDoc',
-  component:studentStatusDoc,
-  // beforeEnter: checkAuth
-},
+  ///Documentation
+  ,
+  {
+    path: '/documentation/dashboard/:id',
+    name: 'Dashbord',
+    component: Dashbord,
+    // beforeEnter: checkAuth
+  },
+  {
+    path: '/documentation/NotificationDoc/:id',
+    name: 'NotificationDoc',
+    component: NotificationDoc,
+    // beforeEnter: checkAuth
+  },
+  {
+    path: '/documentation/new-documents/:id',
+    name: 'newdocuments',
+    component: newdocuments,
+    // beforeEnter: checkAuth
+  },
+  {
+    path: '/documentation/followup-documents/:id',
+    name: 'followupdoc',
+    component: followupdoc,
+    // beforeEnter: checkAuth
+  },
+  {
+    path: '/documentation/total-documents/:id',
+    name: 'TotalDocuments',
+    component: TotalDocuments,
+    // beforeEnter: checkAuth
+  },
+  {
+    path: '/documentation/dropped-documents/:id',
+    name: 'DropedDocuments',
+    component: DropedDocuments,
+    // beforeEnter: checkAuth
+  }
+  ,
+  {
+    path: '/documentation/registered-applications/:id',
+    name: 'registereddocument',
+    component: registereddocument,
+    // beforeEnter: checkAuth
+  },
+  {
+    path: '/documentation/attandence/:id',
+    name: 'attendance1',
+    component: attendance1,
+    // beforeEnter: checkAuth
+  },
+  {
+    path: '/documentation/leave-request2/:id',
+    name: 'leaverequest2',
+    component: leaverequest2,
+    // beforeEnter: checkAuth
+  },
+  {
+    path: '/documentation/messageDoc/:id',
+    name: 'messageDoc',
+    component: messageDoc,
+    // beforeEnter: checkAuth
+  },
+  {
+    path: '/documentation/BirthdayDoc/:id',
+    name: 'BirthdayDoc',
+    component: BirthdayDoc,
+    // beforeEnter: checkAuth
+  },
+  {
+    path: '/documentation/leadStatusDoc/:id',
+    name: 'leadStatusDoc',
+    component: leadStatusDoc,
+    // beforeEnter: checkAuth
+  },
+  {
+    path: '/documentation/studentStatusDoc/:id',
+    name: 'studentStatusDoc',
+    component: studentStatusDoc,
+    // beforeEnter: checkAuth
+  },
 
-///application
-{
-  path: '/Application/Dashbord/:id',
-  name: 'ADashbord',
-  component:ADashbord,
-  // beforeEnter: checkAuth
-},
-{
-  path: '/Application/NotificationApp/:id',
-  name: 'NotificationApp',
-  component: NotificationApp,
-  // beforeEnter: checkAuth
-},
-{
-  path: '/Application/DropedApplications/:id',
-  name: 'DropedApplications',
-  component:DropedApplications,
-  // beforeEnter: checkAuth
-}
+  ///application
+  {
+    path: '/Application/Dashbord/:id',
+    name: 'ADashbord',
+    component: ADashbord,
+    // beforeEnter: checkAuth
+  },
+  {
+    path: '/Application/NotificationApp/:id',
+    name: 'NotificationApp',
+    component: NotificationApp,
+    // beforeEnter: checkAuth
+  },
+  {
+    path: '/Application/DropedApplications/:id',
+    name: 'DropedApplications',
+    component: DropedApplications,
+    // beforeEnter: checkAuth
+  }
 
-,{
-  path: '/Application/FollowupApplication/:id',
-  name: 'FollowupApplicatio',
-  component:FollowupApplicatio,
-  // beforeEnter: checkAuth
-}
+  , {
+    path: '/Application/FollowupApplication/:id',
+    name: 'FollowupApplicatio',
+    component: FollowupApplicatio,
+    // beforeEnter: checkAuth
+  }
 
-,{
-  path: '/Application/NewApplications/:id',
-  name: 'NewApplications',
-  component:NewApplications,
-  // beforeEnter: checkAuth
-}
-,{
-  path: '/Application/registeredApplications/:id',
-  name: 'registeredApplications',
-  component:registeredApplications,
-  // beforeEnter: checkAuth
-}
-,{
-  path: '/Application/TotalApplications/:id',
-  name: 'TotalApplications',
-  component:TotalApplications,
-  // beforeEnter: checkAuth
-},
-{
-  path: '/Application/attandence2/:id',
-  name: 'attendance2',
-  component:attendance2,
-  // beforeEnter: checkAuth
-},
-{
-  path: '/Application/leave-request3/:id',
-  name: 'leaverequest3',
-  component:leaverequest3,
-  // beforeEnter: checkAuth
-},
-{
-  path: '/Application/BirthdayApp/:id',
-  name: 'BirthdayApp',
-  component: BirthdayApp,
-  // beforeEnter: checkAuth
-},
-{
-  path: '/Application/leadStatusApp/:id',
-  name: 'leadStatusApp',
-  component: leadStatusApp,
-  // beforeEnter: checkAuth
-},
-{
-  path: '/Application/student_status/:id',
-  name: 'studentStatusApp',
-  component:studentStatusApp,
-  // beforeEnter: checkAuth
-},
+  , {
+    path: '/Application/NewApplications/:id',
+    name: 'NewApplications',
+    component: NewApplications,
+    // beforeEnter: checkAuth
+  }
+  , {
+    path: '/Application/registeredApplications/:id',
+    name: 'registeredApplications',
+    component: registeredApplications,
+    // beforeEnter: checkAuth
+  }
+  , {
+    path: '/Application/TotalApplications/:id',
+    name: 'TotalApplications',
+    component: TotalApplications,
+    // beforeEnter: checkAuth
+  },
+  {
+    path: '/Application/attandence2/:id',
+    name: 'attendance2',
+    component: attendance2,
+    // beforeEnter: checkAuth
+  },
+  {
+    path: '/Application/leave-request3/:id',
+    name: 'leaverequest3',
+    component: leaverequest3,
+    // beforeEnter: checkAuth
+  },
+  {
+    path: '/Application/BirthdayApp/:id',
+    name: 'BirthdayApp',
+    component: BirthdayApp,
+    // beforeEnter: checkAuth
+  },
+  {
+    path: '/Application/messageApp/:id',
+    name: 'messageApp',
+    component: messageApp,
+    // beforeEnter: checkAuth
+  },
+  {
+    path: '/Application/leadStatusApp/:id',
+    name: 'leadStatusApp',
+    component: leadStatusApp,
+    // beforeEnter: checkAuth
+  },
+  {
+    path: '/Application/student_status/:id',
+    name: 'studentStatusApp',
+    component: studentStatusApp,
+    // beforeEnter: checkAuth
+  },
 
-//viewlead
+  //viewlead
   // {
   //   path: '/admin/leaverequest',
   //   name: 'leaverequest',
   //   component: leaverequest,
   //   // beforeEnter: checkAuth
   // },
- 
+
 
 ];
 
@@ -456,10 +490,6 @@ const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
   routes,
 });
-
-
-
-
 
 export default router;
 

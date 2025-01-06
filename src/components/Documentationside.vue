@@ -60,7 +60,8 @@ import {
   checkmarkCircleOutline,
   ellipsisVertical,
   calendarOutline,
-  briefcaseOutline
+  briefcaseOutline,
+  chatboxOutline
 } from 'ionicons/icons';
 
 export default {
@@ -122,6 +123,7 @@ export default {
       { title: 'Attendance', url: { name: 'attendance1', params: { id: userId.value } }, icon: calendarOutline },
       { title: 'Leave Request', url: { name: 'leaverequest2', params: { id: userId.value } }, icon: briefcaseOutline },
       { title: 'Birthday', url: { name: 'BirthdayDoc', params: { id: userId.value } }, icon: calendarOutline },
+      { title: 'Messages', url: { name: 'messageDoc', params: { id: userId.value } }, icon: chatboxOutline },
       { title: 'Student Status', url: { name: 'studentStatusDoc',  params: { id: userId.value } }, icon: calendarOutline },
       { title: 'Document Status', url: { name: 'leadStatusDoc', params: { id: userId.value }}, icon: calendarOutline }
 
@@ -223,7 +225,8 @@ export default {
       logOutOutline,
       handleLogout,
       alertButtons,
-      ellipsisVertical
+      ellipsisVertical,
+      chatboxOutline
     };
   }
 };

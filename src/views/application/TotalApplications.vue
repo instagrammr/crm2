@@ -211,7 +211,7 @@
                   <ion-row>
                     <ion-col>
                       <ion-select v-model="applicationId" placeholder="Select status">
-                        <ion-select-option v-for="status in totalapplicationList" :key="status.id" :value="status.id">
+                        <ion-select-option v-for="status in totalApplicationList" :key="status.id" :value="status.id">
                           {{ status.status_name }}
                         </ion-select-option>
                       </ion-select>
@@ -583,7 +583,7 @@ export default defineComponent({
     }
   },
   computed: {
-    ...mapState('application', ['totalLeadListId', 'totalLeadCount', 'totalFollowupCount', 'totalRegisteredCount', 'totalDropedCount', 'totalapplicationList', 'totalstatusList', 'totaltodayLeadCount', 'totalremarkListId']),
+    ...mapState('application', ['totalLeadListId', 'totalLeadCount', 'totalFollowupCount', 'totalRegisteredCount', 'totalDropedCount', 'totalApplicationList', 'totalstatusList', 'totaltodayLeadCount', 'totalremarkListId']),
     ...mapState('counsiller', ['totaluploadListId']),
     notificationCount() {
       // Replace this with the logic to fetch the actual notification count
@@ -595,7 +595,7 @@ export default defineComponent({
       },
   },
   methods: {
-    ...mapActions('application', ['fetchtotalLeadlistId', 'fetchtotalleadCount', 'fetchtotalfollowupCount', 'fetchtotaldropedCount', 'fetchtotalregisteredCount', 'fetchtotalapplicationlist', 'fetchtotalstatuslist', 'update_lead', 'delete_leads',
+    ...mapActions('application', ['fetchtotalLeadlistId', 'fetchtotalleadCount', 'fetchtotalfollowupCount', 'fetchtotaldropedCount', 'fetchtotalregisteredCount', 'fetchtotalApplicationlist', 'fetchtotalstatuslist', 'update_lead', 'delete_leads',
       'fetchtotalremarkListId', 'Add_remark', 'update_remark', 'delete_remark', 'fetchtotaltodayLeadCount'
     ]),
     ...mapActions('counsiller', ['FETCH_DOCUMENTS']),
@@ -691,7 +691,7 @@ export default defineComponent({
         await this.fetchtotalfollowupCount(userId);
         await this.fetchtotalregisteredCount(userId);
         await this.fetchtotaldropedCount(userId);
-        await this.fetchtotalapplicationlist();
+        await this.fetchtotalApplicationlist();
         await this.fetchtotalstatuslist();
         await this.fetchtotalremarkListId();
         await this.fetchtotaltodayLeadCount(userId);

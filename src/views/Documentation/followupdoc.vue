@@ -95,7 +95,7 @@
                       </div>
                       <ion-select v-model="lead.documentId" label="Status" labelPlacement="floating" fill="solid"
                         class="form-select" @ionChange="updateLeadStatus(lead)">
-                        <ion-select-option v-for="status in totaldocumentList" :key="status.id" :value="status.id">
+                        <ion-select-option v-for="status in totalDocumentList" :key="status.id" :value="status.id">
                           {{ status.status_name }}
                         </ion-select-option>
                       </ion-select>
@@ -431,7 +431,7 @@ export default defineComponent({
     };
   },
   computed: {
-    ...mapState('document', ['totalfollowupListId', 'totalDropedCount', 'totaldocumentList', 'totaltodayLeadCount', 'totalremarkListId', 'totalLeadCount', 'totalFollowupCount',]),
+    ...mapState('document', ['totalfollowupListId', 'totalDropedCount', 'totalDocumentList', 'totaltodayLeadCount', 'totalremarkListId', 'totalLeadCount', 'totalFollowupCount',]),
     ...mapState('counsiller', ['totaluploadListId']),
     notificationCount() {
       // Replace this with the logic to fetch the actual notification count
@@ -443,7 +443,7 @@ export default defineComponent({
     },
   },
   methods: {
-    ...mapActions('document', ['fetchtotalfollowuplistId', 'fetchtotalfollowupCount', 'fetchtotaldocumentlist', 'update_lead', 'fetchtotalleadCount', 'fetchtotalfollowupCount',
+    ...mapActions('document', ['fetchtotalfollowuplistId', 'fetchtotalfollowupCount', 'fetchtotalDocumentlist', 'update_lead', 'fetchtotalleadCount', 'fetchtotalfollowupCount',
       'fetchtotalremarkListId', 'Add_remark', 'update_remark', 'delete_remark', 'fetchtotaltodayLeadCount', 'fetchtotaldropedCount']),
     ...mapActions('counsiller', ['FETCH_DOCUMENTS']),
     navigateToNoti() {
@@ -657,7 +657,7 @@ export default defineComponent({
         await this.fetchtotalfollowupCount(userId);
         await this.fetchtotalleadCount(userId);
         await this.fetchtotaldropedCount(userId);
-        await this.fetchtotaldocumentlist();
+        await this.fetchtotalDocumentlist();
         await this.fetchtotalremarkListId();
         await this.fetchtotaltodayLeadCount(userId);
         // console.log("Leads fetched successfully:", this.totalfollowupListId);

@@ -50,7 +50,7 @@
   import { ref, computed } from 'vue';
   import { useStore } from 'vuex';
   import axios from 'axios';
-  import { gridOutline, peopleOutline, calendarOutline, ellipsisVertical, briefcaseOutline, logOutOutline } from 'ionicons/icons';
+  import { gridOutline, peopleOutline, calendarOutline, ellipsisVertical, briefcaseOutline, logOutOutline, chatboxOutline } from 'ionicons/icons';
   // import { mapGetters } from 'vuex'
   
   
@@ -84,6 +84,7 @@
         // { title: 'Report', url: { name: '' }, icon: calendarOutline },
         // { title: 'Support', url: { name: '' }, icon: calendarOutline },
         { title: 'Birthday', url: { name: 'BirthdayCouns', params: { id: userId.value } }, icon: calendarOutline },
+        { title: 'Messages', url: { name: 'messageCouns', params: { id: userId.value } }, icon: chatboxOutline },
         { title: 'Student status', url: { name: 'studentStatusCouns', params: { id: userId.value } }, icon: calendarOutline },
         { title: 'Lead status', url: { name: 'leadStatusCouns', params: { id: userId.value }}, icon: calendarOutline }
 
@@ -185,6 +186,7 @@
       handleLogout,
       logOutOutline,
       alertButtons,
+      chatboxOutline,
       ellipsisVertical
     };
     },

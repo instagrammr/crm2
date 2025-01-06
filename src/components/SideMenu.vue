@@ -67,6 +67,7 @@ import {
   documentOutline, 
   addOutline, 
   briefcaseOutline,
+  chatboxOutline,
   ellipsisVertical,
   logOutOutline
 } from 'ionicons/icons';
@@ -106,6 +107,7 @@ export default {
       { title: 'Student Status', url: { name: 'StudentStatus' }, icon: personAddOutline },
       { title: 'Add Leads', url: { name: 'addleads', params: { id: userId.value } }, icon: addOutline },
       // { title: 'Add Employees', url: { name: 'addemployees' }, icon: personAddOutline },
+      { title: 'Messages', url: { name: 'messageAdmin', params: { id: userId.value } }, icon: chatboxOutline },
       { title: 'Leave Request', url: { name: 'leaverequest1', params: { id: userId.value } }, icon: briefcaseOutline },
       { title: 'Birthday', url: { name: 'Birthday' }, icon: calendarOutline },
       { title: 'Lead Status', url: { name: 'leadStatus' }, icon: peopleOutline },

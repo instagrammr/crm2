@@ -8,7 +8,7 @@ import leave  from "./leave";
 import document  from "./document";
 import application  from "./application";
 import addLead  from "./addLead";
-
+import message from "./message";
 
 const store = createStore({
     state: {
@@ -26,7 +26,8 @@ const store = createStore({
         attendance,
         application,
         document,
-        leave 
+        leave,
+        message 
     }
 });
 export default store;

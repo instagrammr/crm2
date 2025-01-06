@@ -92,7 +92,7 @@
                         </div>
                         <ion-select v-model="lead.counsillerId" label="Status" labelPlacement="floating" fill="solid"
                           class="form-select" @ionChange="updateLeadStatus(lead)">
-                          <ion-select-option v-for="status in totalcounsillerList" :key="status.id" :value="status.id">
+                          <ion-select-option v-for="status in totalCounsillerList" :key="status.id" :value="status.id">
                             {{ status.status_name }}
                           </ion-select-option>
                         </ion-select>
@@ -432,7 +432,7 @@ export default defineComponent({
   },
 
   computed: {
-    ...mapState('counsiller', ['totalfollowupListId', 'totalFollowupCount', 'totalcounsillerList', 'totalremarkListId', 'totaltodayLeadCount', 'totaluploadListId', 'totalLeadCount']),
+    ...mapState('counsiller', ['totalfollowupListId', 'totalFollowupCount', 'totalCounsillerList', 'totalremarkListId', 'totaltodayLeadCount', 'totaluploadListId', 'totalLeadCount']),
     notificationCount() {
       // Replace this with the logic to fetch the actual notification count
       return this.totaltodayLeadCount; // Assuming `totaltodayLeadCount` has the count
@@ -464,7 +464,7 @@ export default defineComponent({
   },
 
   methods: {
-    ...mapActions('counsiller', ['fetchtotalfollowuplistId', 'fetchtotalfollowupCount', 'fetchtotalcounsillerlist', 'update_lead', 'Add_remark',
+    ...mapActions('counsiller', ['fetchtotalfollowuplistId', 'fetchtotalfollowupCount', 'fetchtotalCounsillerlist', 'update_lead', 'Add_remark',
       'fetchtotalremarkListId', 'update_remark', 'delete_remark', 'fetchtotaltodayLeadCount', 'FETCH_DOCUMENTS', 'fetchtotalleadCount']),
     ...mapActions('user', ['fetchtotaldocumentlist']),
 
@@ -695,7 +695,7 @@ export default defineComponent({
         await this.fetchtotalfollowuplistId(userId);
         await this.fetchtotalfollowupCount(userId);
         await this.fetchtotalleadCount(userId);
-        await this.fetchtotalcounsillerlist();
+        await this.fetchtotalCounsillerlist();
         await this.fetchtotalremarkListId();
         await this.fetchtotaltodayLeadCount(userId);
       } catch (error) {
