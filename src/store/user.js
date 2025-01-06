@@ -13,6 +13,7 @@ export default {
         totalapplicationList: [],
         totaluserListId: [],
         totaluserList: [],
+        totalstaffList: [],
         totalstaffCount: 0,
         // totalstatusList: [],
     },
@@ -33,6 +34,9 @@ export default {
         },
         SET_ROLE_LIST(state, payload) {
             state.totalroleList = payload;
+        },
+        SET_STAFF_LIST(state, payload) {
+            state.totalstaffList = payload;
         },
         SET_COUNSILLER_LIST(state, payload) {
             state.totalcounsillerList = payload;
@@ -158,6 +162,28 @@ export default {
                 console.log("Response from API:", response.data); // Log the response
                 const leads = response.data.data;
                 context.commit('SET_ROLE_LIST', leads);
+                // console.log("Extracted leads array:", leads); // Log the leads array
+                return leads;
+            } catch (error) {
+                console.error('Error fetching data:', error);
+                throw error;
+            }
+        },
+        async fetchtotalstafflist(context) {
+            try {
+                const auth = JSON.parse(localStorage.getItem('user'));
+                // console.log(auth);
+                const response = await axios.get(`${baseURL}user/staff_list`, {
+                    headers: {
+                        Authorization: 'Bearer ' + auth.access_token,
+                    },
+                    // params: {
+                    //   id,
+                    // },
+                });
+                console.log("Response from API:", response.data); // Log the response
+                const leads = response.data.data;
+                context.commit('SET_STAFF_LIST', leads);
                 // console.log("Extracted leads array:", leads); // Log the leads array
                 return leads;
             } catch (error) {
